@@ -11,6 +11,7 @@ public:
 	bool IsRegular();
 	bool IsTerminalString(const std::string& inputString);
 	bool IsNonTerminal(const char character);
+	bool operator==(const std::string& other);
 private:
 	std::string m_VN;
 	std::string m_VT;

@@ -5,15 +5,16 @@
 #include <fstream>
 #include <sstream>
 
+
+
 bool Gramatica::IsValidGrammar()
 {
     //sa nu fie vn si vt goale
     if (m_VN.empty() || m_VT.empty()) return false;
 
     //sa existe startSymbolul in Vn
-    if (std::find(m_VN.begin(), m_VN.end(), m_startSymbol) == m_VN.end()) return false;
+    if (m_VN.find_first_of(m_startSymbol) == std::string::npos) return false;
 
-   
     if (m_PRules.empty()) return false;
 
     //nu se suprapuna el din vt si vn
@@ -71,7 +72,7 @@ void Gramatica::ReadGrammar(const std::string& filename)
 
 
 Gramatica::Gramatica(std::string startSymbol, std::string Vn, std::string Vt, std::unordered_map<std::string, std::string> Rules)
-    :m_startSymbol(startSymbol), m_VN(Vn), m_VT(Vt), m_PRules(Rules)
+    :m_startSymbol(std::move(startSymbol)), m_VN(std::move(Vn)), m_VT(std::move(Vt)), m_PRules(std::move(Rules))
 {
 }
 
@@ -118,6 +119,8 @@ bool Gramatica::IsNonTerminal(const char character)
 {
     return m_VN.find(character) != std::string::npos;
 }
+
+
 
 bool Gramatica::IsTerminalString(const std::string& inputString)
 {
