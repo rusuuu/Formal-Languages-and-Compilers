@@ -7,7 +7,7 @@ int main()
     std::string filePath = "Rules.txt";
 
    
-    Gramatica grammar("S", "ABC", "abc", {}); 
+    Gramatica grammar; 
 
    
     grammar.ReadGrammar(filePath);

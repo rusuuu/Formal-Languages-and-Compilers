@@ -6,25 +6,39 @@
 #include <sstream>
 
 
-
-bool Gramatica::IsValidGrammar()
+bool Gramatica::IsValidGrammar() 
 {
-    //sa nu fie vn si vt goale
-    if (m_VN.empty() || m_VT.empty()) return false;
-
-    //sa existe startSymbolul in Vn
-    if (m_VN.find_first_of(m_startSymbol) == std::string::npos) return false;
-
-    if (m_PRules.empty()) return false;
-
-    //nu se suprapuna el din vt si vn
-    if (m_VN.find(m_VT) != std::string::npos)
+    // Check if VN and VT are empty
+    if (m_VN.empty() || m_VT.empty()) 
     {
+        std::cerr << "VN or VT is empty\n"; // Debugging
+        return false;
+    }
+
+    // Check if startSymbol exists in VN
+    if (m_VN.find_first_of(m_startSymbol) == std::string::npos)
+    {
+        std::cerr << "Start symbol not in VN\n"; // Debugging
+        return false;
+    }
+
+    // Check if PRules is empty
+    if (m_PRules.empty()) 
+    {
+        std::cerr << "Production rules are empty\n"; // Debugging
+        return false;
+    }
+
+    // Check overlap between VN and VT
+    if (m_VN.find(m_VT) != std::string::npos) 
+    {
+        std::cerr << "Overlap between VN and VT\n"; // Debugging
         return false;
     }
 
     return true;
 }
+
 
 void Gramatica::ReadGrammar(const std::string& filename) 
 {
@@ -36,43 +50,54 @@ void Gramatica::ReadGrammar(const std::string& filename)
     }
 
     std::string line;
-    
+
+    // Read start symbol
     if (std::getline(file, line)) 
     {
-        std::istringstream iss(line);
-        iss >> m_startSymbol; 
-        std::string symbol;
-        while (iss >> symbol)
+        m_startSymbol = Trim(line);
+        std::cout << "Start symbol: " << m_startSymbol << "\n";
+    }
+
+    // Read non-terminals
+    if (std::getline(file, line)) 
+    {
+        m_VN = Trim(line);
+        std::cout << "Non-terminals: " << m_VN << "\n";
+    }
+
+    // Read terminals
+    if (std::getline(file, line)) 
+    {
+        m_VT = Trim(line);
+        std::cout << "Terminals: " << m_VT << "\n";
+    }
+
+    // Read production rules
+    std::cout << "Production rules:\n";
+    while (std::getline(file, line)) 
+    {
+        line = Trim(line);
+        size_t pos = line.find("->");
+        if (pos != std::string::npos) 
         {
-            m_VN += symbol;  
+            std::string left = Trim(line.substr(0, pos));
+            std::string right = Trim(line.substr(pos + 2));
+            m_PRules[left] = right;
+            std::cout << left << " -> " << right << "\n";
         }
     }
 
-    
-    if (std::getline(file, line)) 
-    {
-        m_VT = line;  
-    }
+        file.close();
 
     
-    while (std::getline(file, line))
-    {
-        std::istringstream iss(line);
-        std::string left, right;
-        if (!(iss >> left >> right)) 
-        { 
-            break; 
-        } 
-
-        m_PRules[left] = right;
-    }
-
-    file.close();
 }
-
 
 Gramatica::Gramatica(std::string startSymbol, std::string Vn, std::string Vt, std::unordered_map<std::string, std::string> Rules)
     :m_startSymbol(std::move(startSymbol)), m_VN(std::move(Vn)), m_VT(std::move(Vt)), m_PRules(std::move(Rules))
+{
+}
+
+Gramatica::Gramatica()
 {
 }
 
