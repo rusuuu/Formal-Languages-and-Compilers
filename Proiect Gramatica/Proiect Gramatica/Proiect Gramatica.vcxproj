@@ -127,13 +127,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AutomatFinit.cpp" />
     <ClCompile Include="Gramatica.cpp" />
     <ClCompile Include="Source.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AutomatFinit.h" />
     <ClInclude Include="Gramatica.h" />
   </ItemGroup>
   <ItemGroup>
+    <Text Include="AutomatonInput.txt" />
     <Text Include="Rules.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

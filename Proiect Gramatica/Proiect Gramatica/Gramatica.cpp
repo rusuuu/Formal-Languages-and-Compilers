@@ -1,4 +1,5 @@
 #include "Gramatica.h"
+
 #include <algorithm>
 #include <string>
 #include <iostream>
@@ -86,10 +87,7 @@ void Gramatica::ReadGrammar(const std::string& filename)
             std::cout << left << " -> " << right << "\n";
         }
     }
-
         file.close();
-
-    
 }
 
 Gramatica::Gramatica(std::string startSymbol, std::string Vn, std::string Vt, std::unordered_map<std::string, std::string> Rules)

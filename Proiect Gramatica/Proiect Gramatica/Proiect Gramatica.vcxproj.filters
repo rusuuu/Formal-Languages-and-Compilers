@@ -21,14 +21,23 @@
     <ClCompile Include="Gramatica.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="AutomatFinit.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Gramatica.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="AutomatFinit.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="Rules.txt">
+      <Filter>Source Files</Filter>
+    </Text>
+    <Text Include="AutomatonInput.txt">
       <Filter>Source Files</Filter>
     </Text>
   </ItemGroup>
