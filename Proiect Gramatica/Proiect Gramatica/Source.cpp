@@ -1,17 +1,19 @@
 #include <iostream>
-#include "Gramatica.h" 
+
+#include "Gramatica.h"
+#include "AutomatFinit.h" 
 
 int main() 
 {
     
-    std::string filePath = "Rules.txt";
-
+    std::string filePath1 = "Rules.txt";
+    std::string filePath2 = "AutomatonInput.txt";
    
-    Gramatica grammar; 
+    Gramatica grammar;
+    AutomatFinit automaton;
 
-   
-    grammar.ReadGrammar(filePath);
-
+    grammar.ReadGrammar(filePath1);
+    automaton.ReadAutomaton(filePath2);
    
     if (grammar.IsValidGrammar()) 
     {
@@ -31,6 +33,37 @@ int main()
     else 
     {
         std::cout << "The grammar is not regular." << std::endl;
+    }
+
+    if (automaton.VerifyAutomaton())
+    {
+        std::cout << "The automaton is valid." << std::endl;
+    }
+    else
+    {
+        std::cout << "The automaton is not valid." << std::endl;
+        return 1;
+    }
+
+    if (automaton.IsDeterministic())
+    {
+        std::cout << "The automaton is determinisitc." << std::endl;
+    }
+    else
+    {
+        std::cout << "The automaton is non-deterministic." << std::endl;
+    }
+
+    //automaton.PrintAutomaton();
+
+    std::string word="1010";
+    if (automaton.CheckWord(word))
+    {
+        std::cout << "The word is accepted." << std::endl;
+    }
+    else
+    {
+        std::cout << "The word isn't accepted." << std::endl;
     }
 
     return 0;

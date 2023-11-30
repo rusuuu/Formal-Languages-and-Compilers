@@ -12,7 +12,7 @@ class AutomatFinit
 public:
 
 	bool VerifyAutomaton();
-	void ReadAutomaton();
+	void ReadAutomaton(const std::string& filename);
 	void PrintAutomaton();
 	bool CheckWord(std::string word);
 	bool IsDeterministic();
@@ -47,3 +47,26 @@ private:
 	}
 };
 
+//nedeterminist
+//q0 q1 q2 q3
+//01
+//q0
+//q2
+//q0 0 q1
+//q0 1 q0 q1
+//q1 0 \0
+//q1 1 q3
+//q2 0 q2
+//q2 1 q3
+//q3 0 q2
+//q3 1 q1 q2
+
+//determinist
+//q0 q1
+//ab
+//q0
+//q1
+//q0 a q0
+//q0 b q1
+//q1 a q1
+//q1 b q0
