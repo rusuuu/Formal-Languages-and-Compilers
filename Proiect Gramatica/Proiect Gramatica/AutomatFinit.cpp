@@ -178,85 +178,134 @@ void AutomatFinit::PrintAutomaton()
 	}
 }
 
+//bool AutomatFinit::OldCheckWord(std::string word)
+//{
+//	if (word.size() < 1) return false;
+//
+//	std::string currentState = m_q0;
+//
+//	if(IsDeterministic())
+//	{
+//		for (char letter : word)
+//		{
+//			if (m_sigma.find(letter) == -1) return false;
+//
+//			for (int index = 0; index < m_delta.size(); index++)
+//			{
+//				if (std::get<0>(m_delta[index]) == currentState && std::get<1>(m_delta[index]) == letter)
+//				{
+//					const auto& nextStates = std::get<2>(m_delta[index]);
+//
+//					if (nextStates.size() > 0) 
+//						currentState = nextStates[0];
+//					else 
+//						return false;
+//
+//					break;
+//				}
+//			}
+//		}
+//
+//		auto iterator = std::find(m_F.begin(), m_F.end(), currentState);
+//
+//		if (iterator != m_F.end()) 
+//			return true;
+//		else 
+//			return false;
+//	}
+//	else
+//	{
+//		std::queue<std::tuple<std::string, std::string>> statesQueue;
+//		statesQueue.push(std::make_tuple(currentState, word));
+//
+//		std::vector<std::string> futureStates;
+//		while(!statesQueue.empty())
+//		{
+//			std::tuple<std::string, std::string> currentFront = statesQueue.front();
+//			std::string currentWord = std::get<1>(currentFront);
+//			char letter = std::get<1>(currentFront)[0];
+//			currentState = std::get<0>(currentFront);
+//
+//			auto iterator = std::find(m_F.begin(), m_F.end(), currentState);
+//
+//			if (iterator != m_F.end())
+//				return true;
+//
+//			if (currentWord.size() > 1)
+//			{
+//				for (int index = 0; index < m_delta.size(); index++)
+//				{
+//					if (std::get<0>(m_delta[index]) == currentState && std::get<1>(m_delta[index]) == letter)
+//					{
+//						const auto& nextStates = std::get<2>(m_delta[index]);
+//
+//						if (nextStates.size() > 0)
+//						{
+//							futureStates = nextStates;
+//							break;
+//						}
+//					}
+//				}
+//
+//				for (auto state : futureStates)
+//				{
+//					statesQueue.push(std::make_tuple(state, currentWord.substr(1)));
+//				}
+//			}
+//			statesQueue.pop();
+//		}
+//
+//		return false;
+//	}
+//}
+
 bool AutomatFinit::CheckWord(std::string word)
 {
 	if (word.size() < 1) return false;
 
 	std::string currentState = m_q0;
+	std::queue<std::tuple<std::string, std::string>> statesQueue;
+	statesQueue.push(std::make_tuple(currentState, word));
 
-	if(IsDeterministic())
+	std::vector<std::string> futureStates;
+	while (!statesQueue.empty())
 	{
-		for (char letter : word)
-		{
-			if (m_sigma.find(letter) == -1) return false;
+		std::tuple<std::string, std::string> currentFront = statesQueue.front();
+		std::string currentWord = std::get<1>(currentFront);
+		char letter = std::get<1>(currentFront)[0];
+		currentState = std::get<0>(currentFront);
 
+		auto iterator = std::find(m_F.begin(), m_F.end(), currentState);
+
+		if (iterator != m_F.end())
+			return true;
+
+		if (currentWord.size() > 1)
+		{
 			for (int index = 0; index < m_delta.size(); index++)
 			{
 				if (std::get<0>(m_delta[index]) == currentState && std::get<1>(m_delta[index]) == letter)
 				{
 					const auto& nextStates = std::get<2>(m_delta[index]);
 
-					if (nextStates.size() > 0) 
-						currentState = nextStates[0];
-					else 
-						return false;
-
-					break;
-				}
-			}
-		}
-
-		auto iterator = std::find(m_F.begin(), m_F.end(), currentState);
-
-		if (iterator != m_F.end()) 
-			return true;
-		else 
-			return false;
-	}
-	else
-	{
-		std::queue<std::tuple<std::string, std::string>> statesQueue;
-		statesQueue.push(std::make_tuple(currentState, word));
-
-		std::vector<std::string> futureStates;
-		while(!statesQueue.empty())
-		{
-			std::tuple<std::string, std::string> currentFront = statesQueue.front();
-			std::string currentWord = std::get<1>(currentFront);
-			char letter = std::get<1>(currentFront)[0];
-			currentState = std::get<0>(currentFront);
-
-			auto iterator = std::find(m_F.begin(), m_F.end(), currentState);
-
-			if (iterator != m_F.end())
-				return true;
-
-			if (currentWord.size() > 1)
-			{
-				for (int index = 0; index < m_delta.size(); index++)
-				{
-					if (std::get<0>(m_delta[index]) == currentState && std::get<1>(m_delta[index]) == letter)
+					if (nextStates.size() > 0)
 					{
-						const auto& nextStates = std::get<2>(m_delta[index]);
-
-						if (nextStates.size() > 0)
-						{
-							futureStates = nextStates;
-							break;
-						}
+						futureStates = nextStates;
+						break;
 					}
 				}
-
-				for (auto state : futureStates)
-				{
-					statesQueue.push(std::make_tuple(state, currentWord.substr(1)));
-				}
 			}
-			statesQueue.pop();
-		}
 
-		return false;
+			for (auto state : futureStates)
+			{
+				statesQueue.push(std::make_tuple(state, currentWord.substr(1)));
+			}
+		}
+		statesQueue.pop();
 	}
+
+	return false;
+	
 }
 
 bool AutomatFinit::IsDeterministic()
