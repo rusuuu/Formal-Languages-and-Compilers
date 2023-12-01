@@ -69,5 +69,11 @@ int main()
 
     grammar.GenerateWord();
 
+    FiniteAutomaton newAutomaton;
+    newAutomaton = newAutomaton.GrammarToFiniteAutomaton(grammar);
+    std::cout << std::endl;
+    std::cout << std::endl;
+    newAutomaton.PrintAutomaton();
+
     return 0;
 }

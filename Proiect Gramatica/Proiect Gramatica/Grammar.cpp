@@ -8,6 +8,17 @@
 #include <random>
 #include <ctime>
 
+Grammar::Grammar(std::string startSymbol, std::string Vn, std::string Vt, std::unordered_map<std::string, std::string> Rules):
+	m_startSymbol(std::move(startSymbol)),
+	m_VN(std::move(Vn)),
+	m_VT(std::move(Vt)),
+	m_PRules(std::move(Rules))
+{
+}
+
+Grammar::Grammar()
+{
+}
 
 bool Grammar::IsValidGrammar() 
 {
@@ -41,7 +52,6 @@ bool Grammar::IsValidGrammar()
 
     return true;
 }
-
 
 void Grammar::ReadGrammar(const std::string& filename)
 {
@@ -89,16 +99,8 @@ void Grammar::ReadGrammar(const std::string& filename)
             std::cout << left << " -> " << right << "\n";
         }
     }
-        file.close();
-}
 
-Grammar::Grammar(std::string startSymbol, std::string Vn, std::string Vt, std::unordered_map<std::string, std::string> Rules)
-    :m_startSymbol(std::move(startSymbol)), m_VN(std::move(Vn)), m_VT(std::move(Vt)), m_PRules(std::move(Rules))
-{
-}
-
-Grammar::Grammar()
-{
+	file.close();
 }
 
 bool Grammar::IsRegular()
@@ -145,6 +147,25 @@ bool Grammar::IsNonTerminal(const char character)
     return m_VN.find(character) != std::string::npos;
 }
 
+std::string Grammar::GetVN()
+{
+    return m_VN;
+}
+
+std::string Grammar::GetVT()
+{
+    return m_VT;
+}
+
+std::string Grammar::GetStartSymbol()
+{
+    return m_startSymbol;
+}
+
+std::unordered_map<std::string, std::string> Grammar::GetPRules()
+{
+    return m_PRules;
+}
 
 
 bool Grammar::IsTerminalString(const std::string& inputString)

@@ -8,15 +8,21 @@
 #include <cctype>
 #include <sstream>
 
+#include "Grammar.h"
+
 class FiniteAutomaton
 {
 public:
+
+	FiniteAutomaton(std::vector<std::string> Q, std::string sigma, std::string q0, std::vector<std::string> F, std::vector<std::tuple<std::string, char, std::vector<std::string>>> delta);
+	FiniteAutomaton();
 
 	bool VerifyAutomaton();
 	void ReadAutomaton(const std::string& filename);
 	void PrintAutomaton();
 	bool CheckWord(std::string word);
 	bool IsDeterministic();
+	FiniteAutomaton GrammarToFiniteAutomaton(Grammar grammar);
 
 private:
 

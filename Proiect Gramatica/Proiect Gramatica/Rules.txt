@@ -1,11 +1,7 @@
 S
-S B C
-a b c
-S -> aSBC
-S -> aBC
-CB -> BC
-aB -> ab
-bB -> bb
-cB -> Bc
-cC -> cc
-bC -> bc
+S A B
+a b
+S -> aA
+A ->
+A -> bB
+B -> aS

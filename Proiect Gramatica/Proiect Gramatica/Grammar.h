@@ -9,15 +9,22 @@
 class Grammar
 {
 public:
-	bool IsValidGrammar();
-	void ReadGrammar(const std::string& filename);
+
 	Grammar(std::string startSymbol, std::string Vn, std::string Vt, std::unordered_map<std::string, std::string> Rules);
 	Grammar();
+
+	bool IsValidGrammar();
+	void ReadGrammar(const std::string& filename);
 	bool IsRegular();
 	bool IsTerminalString(const std::string& inputString);
 	std::string GenerateWord();
 	bool IsNonTerminal(const char character);
 	//bool operator==(const std::string& other);
+
+	std::string GetVN();
+	std::string GetVT();
+	std::string GetStartSymbol();
+	std::unordered_map<std::string, std::string> GetPRules();
 
 private:
 	std::string m_VN;
@@ -47,3 +54,23 @@ private:
     }
 };
 
+//S
+//S B C
+//a b c
+//S->aSBC
+//S->aBC
+//CB->BC
+//aB->ab
+//bB->bb
+//cB->Bc
+//cC->cc
+//bC->bc
+
+//S
+//S A B C D
+//a b
+//S->aA
+//A->bB
+//B->aC
+//C->bD
+//D->aS

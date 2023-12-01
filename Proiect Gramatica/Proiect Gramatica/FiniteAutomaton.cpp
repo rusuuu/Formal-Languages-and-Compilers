@@ -15,6 +15,20 @@ bool ElementIsInQ(std::vector<std::string> m_Q, std::string element)
 	return true;
 }
 
+FiniteAutomaton::FiniteAutomaton(std::vector<std::string> Q, std::string sigma, std::string q0,
+	std::vector<std::string> F, std::vector<std::tuple<std::string, char, std::vector<std::string>>> delta):
+	m_Q(std::move(Q)),
+	m_sigma(std::move(sigma)),
+	m_q0(std::move(q0)),
+	m_F(std::move(F)),
+	m_delta(std::move(delta))
+{
+}
+
+FiniteAutomaton::FiniteAutomaton()
+{
+}
+
 bool FiniteAutomaton::VerifyAutomaton()
 {
 	// Check if F is empty
@@ -317,4 +331,78 @@ bool FiniteAutomaton::IsDeterministic()
 		if (std::get<2>(m_delta[index]).size() > 1) return false;
 
 	return true;
+}
+
+FiniteAutomaton FiniteAutomaton::GrammarToFiniteAutomaton(Grammar grammar)
+{
+	//Create grammar components
+	std::string VN = grammar.GetVN();
+	std::string VT = grammar.GetVT();
+	std::string startSymbol = grammar.GetStartSymbol();
+	std::unordered_map<std::string, std::string> PRules = grammar.GetPRules();
+
+	//Create automaton components
+	std::vector<std::string> Q;
+	std::string sigma;
+	std::string q0;
+	std::vector<std::string> F;
+	std::vector<std::tuple<std::string, char, std::vector<std::string>>> delta;
+
+	//S -> m_q0
+	q0 = startSymbol;
+
+	//Create states (VN -> Q)
+	for(char letter: VN)
+	{
+		if(letter!=' ') Q.push_back(std::string(1, letter));
+	}
+
+	//Create alphabet (VT -> sigma)
+	for (char letter : VT)
+	{
+		if (letter != ' ') sigma.push_back(letter);
+	}
+
+	//Create transitions P -> delta
+	for(const auto& production: PRules)
+	{
+		std::string firstPart = production.first;
+		const auto& secondPart = production.second;
+
+		if (secondPart.size() <= 1) //For productions that contain lambda
+		{
+			// Check if firstPart is not already in m_F
+			if (std::find(F.begin(), F.end(), firstPart) == F.end()) F.push_back(firstPart);
+		}
+		else //For productions that don't contain lambda
+		{
+			std::vector<std::string> thirdElement;
+			if (secondPart.size() >= 2)
+				thirdElement.push_back(std::string(1, secondPart[1]));
+			else
+				thirdElement.push_back("");
+
+
+			// Search for an existing tuple with the same firstPart and secondPart[0]
+			auto it = std::find_if(delta.begin(), delta.end(),
+				[&](const auto& tuple)
+				{
+					return std::get<0>(tuple) == firstPart && std::get<1>(tuple) == secondPart[0];
+				});
+
+			if (it != delta.end())
+			{
+				//There is already a transition that contains the same first element and path so we only add the second element next to the existing ones if it's the case
+				std::get<2>(*it).insert(std::end(std::get<2>(*it)), std::begin(thirdElement), std::end(thirdElement));
+			}
+			else
+			{
+				//There isn't any transition that contains the same first element and path so we make a new one
+				delta.push_back(std::make_tuple(firstPart, secondPart[0], thirdElement));
+			}
+		}
+	}
+
+	FiniteAutomaton automaton(Q, sigma, q0, F, delta);
+	return automaton;
 }
