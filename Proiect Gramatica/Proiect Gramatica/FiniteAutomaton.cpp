@@ -44,16 +44,19 @@ bool FiniteAutomaton::VerifyAutomaton()
 			if (!ElementIsInQ(m_Q, std::get<2>(m_delta[index1])[index2])) return false;
 	}
 
-
+	//Check if at least a transition from delta has q0 as an initial state
 	int index = 0;
-	bool valid = true;
-	while (index < m_delta.size() && valid)
+	bool valid = false;
+	while (index < m_delta.size())
 	{
 		if (std::get<0>(m_delta[index]) == m_q0)
-			valid = false;
+		{
+			valid = true;
+			break;
+		}
 		index++;
 	}
-	if (valid)
+	if (!valid)
 		return false;
 
 	return true;
