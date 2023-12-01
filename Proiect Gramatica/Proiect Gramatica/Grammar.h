@@ -6,15 +6,16 @@
 #include <string>
 #include <sstream>
 
-class Gramatica
+class Grammar
 {
 public:
 	bool IsValidGrammar();
 	void ReadGrammar(const std::string& filename);
-	Gramatica(std::string startSymbol, std::string Vn, std::string Vt, std::unordered_map<std::string, std::string> Rules);
-	Gramatica();
+	Grammar(std::string startSymbol, std::string Vn, std::string Vt, std::unordered_map<std::string, std::string> Rules);
+	Grammar();
 	bool IsRegular();
 	bool IsTerminalString(const std::string& inputString);
+	std::string GenerateWord();
 	bool IsNonTerminal(const char character);
 	//bool operator==(const std::string& other);
 

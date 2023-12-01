@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "Gramatica.h"
+#include "Grammar.h"
 #include "AutomatFinit.h" 
 
 int main() 
@@ -9,7 +9,7 @@ int main()
     std::string filePath1 = "Rules.txt";
     std::string filePath2 = "AutomatonInput.txt";
    
-    Gramatica grammar;
+    Grammar grammar;
     AutomatFinit automaton;
 
     grammar.ReadGrammar(filePath1);
@@ -65,6 +65,9 @@ int main()
     {
         std::cout << "The word isn't accepted." << std::endl;
     }
+
+
+    grammar.GenerateWord();
 
     return 0;
 }

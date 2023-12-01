@@ -128,12 +128,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AutomatFinit.cpp" />
-    <ClCompile Include="Gramatica.cpp" />
+    <ClCompile Include="Grammar.cpp" />
     <ClCompile Include="Source.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AutomatFinit.h" />
-    <ClInclude Include="Gramatica.h" />
+    <ClInclude Include="Grammar.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="AutomatonInput.txt" />

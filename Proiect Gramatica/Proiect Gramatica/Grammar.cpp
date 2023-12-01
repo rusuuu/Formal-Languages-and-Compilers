@@ -1,13 +1,15 @@
-#include "Gramatica.h"
+#include "Grammar.h"
 
 #include <algorithm>
 #include <string>
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <random>
+#include <ctime>
 
 
-bool Gramatica::IsValidGrammar() 
+bool Grammar::IsValidGrammar() 
 {
     // Check if VN and VT are empty
     if (m_VN.empty() || m_VT.empty()) 
@@ -41,7 +43,7 @@ bool Gramatica::IsValidGrammar()
 }
 
 
-void Gramatica::ReadGrammar(const std::string& filename) 
+void Grammar::ReadGrammar(const std::string& filename)
 {
     std::ifstream file(filename);
     if (!file.is_open()) 
@@ -90,16 +92,16 @@ void Gramatica::ReadGrammar(const std::string& filename)
         file.close();
 }
 
-Gramatica::Gramatica(std::string startSymbol, std::string Vn, std::string Vt, std::unordered_map<std::string, std::string> Rules)
+Grammar::Grammar(std::string startSymbol, std::string Vn, std::string Vt, std::unordered_map<std::string, std::string> Rules)
     :m_startSymbol(std::move(startSymbol)), m_VN(std::move(Vn)), m_VT(std::move(Vt)), m_PRules(std::move(Rules))
 {
 }
 
-Gramatica::Gramatica()
+Grammar::Grammar()
 {
 }
 
-bool Gramatica::IsRegular()
+bool Grammar::IsRegular()
 {
     bool isRightLinear = true;
     bool isLeftLinear = true;
@@ -138,14 +140,14 @@ bool Gramatica::IsRegular()
     return isRightLinear || isLeftLinear;
 }
 
-bool Gramatica::IsNonTerminal(const char character)
+bool Grammar::IsNonTerminal(const char character)
 {
     return m_VN.find(character) != std::string::npos;
 }
 
 
 
-bool Gramatica::IsTerminalString(const std::string& inputString)
+bool Grammar::IsTerminalString(const std::string& inputString)
 {
     for (char character : inputString)
     {
@@ -155,4 +157,62 @@ bool Gramatica::IsTerminalString(const std::string& inputString)
         }
     }
     return true;
+}
+
+std::string Grammar::GenerateWord()
+{
+    if (!IsValidGrammar())
+    {
+        std::cerr << "Invalid grammar, cannot generate word\n";
+        return "";
+    }
+
+    std::string currentString = m_startSymbol;
+    std::string progress = m_startSymbol; // For tracking progress
+    std::mt19937 rng(static_cast<unsigned int>(std::time(nullptr))); // Random number generator
+
+    int maxIterations = 100;
+    int iterationCount = 0;
+
+    while (iterationCount < maxIterations && std::any_of(currentString.begin(), currentString.end(), [this](char ch) { return IsNonTerminal(ch); }))
+    {
+        std::vector<std::pair<std::string, std::string>> applicableProductions;
+
+        // Find all applicable productions
+        for (const auto& rule : m_PRules) 
+        {
+            size_t pos = currentString.find(rule.first);
+            if (pos != std::string::npos) 
+            {
+                applicableProductions.emplace_back(rule.first, rule.second);
+            }
+        }
+
+        if (applicableProductions.empty()) 
+        {
+            break; // No applicable productions, break the loop
+        }
+
+        // Randomly select one production
+        std::uniform_int_distribution<int> dist(0, applicableProductions.size() - 1);
+        auto selectedProduction = applicableProductions[dist(rng)];
+
+        // Apply the selected production
+        size_t pos = currentString.find(selectedProduction.first);
+        if (pos != std::string::npos) {
+            currentString.replace(pos, selectedProduction.first.length(), selectedProduction.second);
+        }
+
+        // Update progress
+        progress += " -> " + currentString;
+
+        iterationCount++;
+    }
+
+    if (iterationCount >= maxIterations) {
+        std::cerr << "Reached maximum iterations, might be stuck in a loop\n";
+    }
+
+    std::cout << "The process: " << progress << std::endl;
+    return currentString;
 }
