@@ -1,7 +1,7 @@
 #pragma once
 
 #include <vector>
-#include <unordered_map>
+#include <map>
 #include <cctype>
 #include <string>
 #include <sstream>
@@ -10,10 +10,9 @@ class Grammar
 {
 public:
 
-	Grammar(std::string startSymbol, std::string Vn, std::string Vt, std::unordered_map<std::string, std::string> Rules);
+	Grammar(std::string startSymbol, std::string Vn, std::string Vt, std::multimap<std::string, std::string> Rules);
 	Grammar();
 
-	void PrintRules();
 	bool IsValidGrammar();
 	void ReadGrammar(const std::string& filename);
 	bool IsRegular();
@@ -25,13 +24,13 @@ public:
 	std::string GetVN();
 	std::string GetVT();
 	std::string GetStartSymbol();
-	std::unordered_map<std::string, std::string> GetPRules();
+	std::multimap<std::string, std::string> GetPRules();
 
 private:
 	std::string m_VN;
 	std::string m_VT;
 	std::string m_startSymbol;
-	std::unordered_map<std::string, std::string> m_PRules;
+	std::multimap<std::string, std::string> m_PRules;
 
 	// Utility function to trim spaces from a string
 	std::string Trim(const std::string& str) 

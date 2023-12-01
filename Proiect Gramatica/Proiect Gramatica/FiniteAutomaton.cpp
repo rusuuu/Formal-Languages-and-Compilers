@@ -339,7 +339,7 @@ FiniteAutomaton FiniteAutomaton::GrammarToFiniteAutomaton(Grammar grammar)
 	std::string VN = grammar.GetVN();
 	std::string VT = grammar.GetVT();
 	std::string startSymbol = grammar.GetStartSymbol();
-	std::unordered_map<std::string, std::string> PRules = grammar.GetPRules();
+	std::multimap<std::string, std::string> PRules = grammar.GetPRules();
 
 	//Create automaton components
 	std::vector<std::string> Q;

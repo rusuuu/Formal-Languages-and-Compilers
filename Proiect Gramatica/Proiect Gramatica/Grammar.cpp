@@ -8,7 +8,7 @@
 #include <random>
 #include <ctime>
 
-Grammar::Grammar(std::string startSymbol, std::string Vn, std::string Vt, std::unordered_map<std::string, std::string> Rules):
+Grammar::Grammar(std::string startSymbol, std::string Vn, std::string Vt, std::multimap<std::string, std::string> Rules):
 	m_startSymbol(std::move(startSymbol)),
 	m_VN(std::move(Vn)),
 	m_VT(std::move(Vt)),
@@ -18,13 +18,6 @@ Grammar::Grammar(std::string startSymbol, std::string Vn, std::string Vt, std::u
 
 Grammar::Grammar()
 {
-}
-
-void Grammar::PrintRules()
-{
-    for (const auto& entry : m_PRules) {
-        std::cout << entry.first << " -> " << entry.second << std::endl;
-    }
 }
 
 bool Grammar::IsValidGrammar() 
@@ -103,7 +96,7 @@ void Grammar::ReadGrammar(const std::string& filename)
             std::string left = Trim(line.substr(0, pos));
             std::string right = Trim(line.substr(pos + 2));
 
-            m_PRules[left] = right;
+            m_PRules.insert(std::make_pair(left, right));
             std::cout << "New print: " << left << " -> " << right << "\n";
         }
     }
@@ -170,7 +163,7 @@ std::string Grammar::GetStartSymbol()
     return m_startSymbol;
 }
 
-std::unordered_map<std::string, std::string> Grammar::GetPRules()
+std::multimap<std::string, std::string> Grammar::GetPRules()
 {
     return m_PRules;
 }
