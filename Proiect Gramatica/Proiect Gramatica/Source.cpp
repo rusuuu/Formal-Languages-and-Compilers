@@ -56,7 +56,7 @@ int main()
 
     //automaton.PrintAutomaton();
 
-    std::string word="aabba";
+    std::string word="0110";
     if (automaton.CheckWord(word))
     {
         std::cout << "The word: "<< word <<" is accepted." << std::endl;
