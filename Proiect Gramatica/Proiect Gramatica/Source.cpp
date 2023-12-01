@@ -1,7 +1,7 @@
 #include <iostream>
 
 #include "Grammar.h"
-#include "AutomatFinit.h" 
+#include "FiniteAutomaton.h" 
 
 int main() 
 {
@@ -10,7 +10,7 @@ int main()
     std::string filePath2 = "AutomatonInput.txt";
    
     Grammar grammar;
-    AutomatFinit automaton;
+    FiniteAutomaton automaton;
 
     grammar.ReadGrammar(filePath1);
     automaton.ReadAutomaton(filePath2);
@@ -56,7 +56,7 @@ int main()
 
     //automaton.PrintAutomaton();
 
-    std::string word="aab";
+    std::string word="aabb";
     if (automaton.CheckWord(word))
     {
         std::cout << "The word is accepted." << std::endl;

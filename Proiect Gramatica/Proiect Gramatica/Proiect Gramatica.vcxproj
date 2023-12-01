@@ -127,12 +127,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="AutomatFinit.cpp" />
+    <ClCompile Include="FiniteAutomaton.cpp" />
     <ClCompile Include="Grammar.cpp" />
     <ClCompile Include="Source.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="AutomatFinit.h" />
+    <ClInclude Include="FiniteAutomaton.h" />
     <ClInclude Include="Grammar.h" />
   </ItemGroup>
   <ItemGroup>

@@ -1,4 +1,4 @@
-#include "AutomatFinit.h"
+#include "FiniteAutomaton.h"
 
 #include <algorithm>
 #include <string>
@@ -15,7 +15,7 @@ bool ElementIsInQ(std::vector<std::string> m_Q, std::string element)
 	return true;
 }
 
-bool AutomatFinit::VerifyAutomaton()
+bool FiniteAutomaton::VerifyAutomaton()
 {
 	// Check if F is empty
 	if (m_F.size() == 0)
@@ -60,7 +60,7 @@ bool AutomatFinit::VerifyAutomaton()
 
 }
 
-void AutomatFinit::ReadAutomaton(const std::string& filename)
+void FiniteAutomaton::ReadAutomaton(const std::string& filename)
 {
 	std::ifstream file(filename);
 	if (!file.is_open())
@@ -133,7 +133,7 @@ void AutomatFinit::ReadAutomaton(const std::string& filename)
 
 			m_delta.emplace_back(state, symbol, nextStates);
 
-			std::cout << " delta( " << state << ", " << symbol << " ) = { ";
+			std::cout << "delta( " << state << ", " << symbol << " ) = { ";
 			for (const auto& nextState : nextStates)
 			{
 				std::cout << nextState << " ";
@@ -146,7 +146,7 @@ void AutomatFinit::ReadAutomaton(const std::string& filename)
 	file.close();
 }
 
-void AutomatFinit::PrintAutomaton()
+void FiniteAutomaton::PrintAutomaton()
 {
 	std::cout << "States: ";
 	for (const auto& state : m_Q)
@@ -178,7 +178,7 @@ void AutomatFinit::PrintAutomaton()
 	}
 }
 
-//bool AutomatFinit::OldCheckWord(std::string word)
+//bool FiniteAutomaton::OldCheckWord(std::string word)
 //{
 //	if (word.size() < 1) return false;
 //
@@ -259,7 +259,7 @@ void AutomatFinit::PrintAutomaton()
 //	}
 //}
 
-bool AutomatFinit::CheckWord(std::string word)
+bool FiniteAutomaton::CheckWord(std::string word)
 {
 	if (word.size() < 1) return false;
 
@@ -305,10 +305,10 @@ bool AutomatFinit::CheckWord(std::string word)
 	}
 
 	return false;
-	
+
 }
 
-bool AutomatFinit::IsDeterministic()
+bool FiniteAutomaton::IsDeterministic()
 {
 	for (int index = 0; index < m_delta.size(); index++)
 		if (std::get<2>(m_delta[index]).size() > 1) return false;
