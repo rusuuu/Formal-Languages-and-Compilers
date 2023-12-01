@@ -186,7 +186,7 @@ void FiniteAutomaton::PrintAutomaton()
 	std::cout << "Transitions:\n";
 	for (const auto& transition : m_delta)
 	{
-		std::cout << " delta( " << std::get<0>(transition) << ", " << std::get<1>(transition) << " ) = { ";
+		std::cout << "delta( " << std::get<0>(transition) << ", " << std::get<1>(transition) << " ) = { ";
 		for (const auto& nextState : std::get<2>(transition))
 		{
 			std::cout << nextState << " ";
