@@ -20,6 +20,13 @@ Grammar::Grammar()
 {
 }
 
+void Grammar::PrintRules()
+{
+    for (const auto& entry : m_PRules) {
+        std::cout << entry.first << " -> " << entry.second << std::endl;
+    }
+}
+
 bool Grammar::IsValidGrammar() 
 {
     // Check if VN and VT are empty
@@ -95,8 +102,9 @@ void Grammar::ReadGrammar(const std::string& filename)
         {
             std::string left = Trim(line.substr(0, pos));
             std::string right = Trim(line.substr(pos + 2));
+
             m_PRules[left] = right;
-            std::cout << left << " -> " << right << "\n";
+            std::cout << "New print: " << left << " -> " << right << "\n";
         }
     }
 

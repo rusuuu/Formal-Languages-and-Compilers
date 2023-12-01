@@ -14,6 +14,9 @@ int main()
 
     grammar.ReadGrammar(filePath1);
     automaton.ReadAutomaton(filePath2);
+    std::cout << std::endl;
+    grammar.PrintRules();
+    std::cout << std::endl;
    
     if (grammar.IsValidGrammar()) 
     {
@@ -67,7 +70,7 @@ int main()
     }
 
 
-    grammar.GenerateWord();
+    //grammar.GenerateWord();
 
     FiniteAutomaton newAutomaton;
     newAutomaton = newAutomaton.GrammarToFiniteAutomaton(grammar);

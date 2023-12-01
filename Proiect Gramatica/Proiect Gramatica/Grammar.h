@@ -13,6 +13,7 @@ public:
 	Grammar(std::string startSymbol, std::string Vn, std::string Vt, std::unordered_map<std::string, std::string> Rules);
 	Grammar();
 
+	void PrintRules();
 	bool IsValidGrammar();
 	void ReadGrammar(const std::string& filename);
 	bool IsRegular();
