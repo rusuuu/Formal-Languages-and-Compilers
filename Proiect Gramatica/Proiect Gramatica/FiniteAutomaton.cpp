@@ -92,6 +92,71 @@ void FiniteAutomaton::ReadAutomaton(const std::string& filename)
 	if (std::getline(file, line))
 	{
 		m_Q = Split(Trim(line));
+	}
+
+	// Read input alphabet
+	if (std::getline(file, line))
+	{
+		m_sigma = Trim(line);
+	}
+
+	// Read initial state
+	if (std::getline(file, line))
+	{
+		m_q0 = Trim(line);
+	}
+
+	// Read final states
+	if (std::getline(file, line))
+	{
+		m_F = Split(Trim(line));
+	}
+
+	// Read transitions
+	while (std::getline(file, line))
+	{
+		line = Trim(line);
+		std::vector<std::string> tokens = Split(line);
+
+		if (tokens.size() >= 3)
+		{
+			std::string state = tokens[0];
+			char symbol = tokens[1][0];
+			std::vector<std::string> nextStates;
+
+			// Handle "\0" as an empty string
+			for (size_t i = 2; i < tokens.size(); ++i)
+			{
+				if (tokens[i] != "\\0")
+				{
+					nextStates.push_back(tokens[i]);
+				}
+			}
+
+			m_delta.emplace_back(state, symbol, nextStates);
+
+			
+		}
+	}
+
+	file.close();
+}
+
+void FiniteAutomaton::DisplayAutomaton(const std::string& filename)
+{
+	std::ifstream file(filename);
+	if (!file.is_open())
+	{
+		std::cerr << "Unable to open file\n";
+		return;
+	}
+
+	std::string line;
+
+	// Read states
+	if (std::getline(file, line))
+	{
+		m_Q = Split(Trim(line));
 		std::cout << "States: ";
 		for (const auto& state : m_Q)
 		{

@@ -19,6 +19,7 @@ public:
 
 	bool VerifyAutomaton();
 	void ReadAutomaton(const std::string& filename);
+	void DisplayAutomaton(const std::string& filename);
 	void PrintAutomaton();
 	bool CheckWord(std::string word);
 	bool IsDeterministic();
