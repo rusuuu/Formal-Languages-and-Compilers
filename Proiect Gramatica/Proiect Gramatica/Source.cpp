@@ -100,7 +100,7 @@ int main()
 			automaton.PrintAutomaton();
 			break;
 		case 4:
-			automaton.ReadAutomaton(filePath2);
+			//automaton.ReadAutomaton(filePath2);
 			if (automaton.VerifyAutomaton())
 			{
 				std::cout << RED "Automaton not valid!\n";
