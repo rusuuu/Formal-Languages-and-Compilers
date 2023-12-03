@@ -54,7 +54,7 @@ int main()
 		std::cout << "3. Display equivalent automaton\n";
 		std::cout << "4. Check if a word is accepted by the automaton\n";
 		std::cout << "5. Generate a word in G and check if it is accepted by the automaton\n";
-		std::cout << "6. Clear screen\n";
+		std::cout << "6. Clear screen.\n";
 		std::cout << "7. Quit\n";
 
 		int choice;

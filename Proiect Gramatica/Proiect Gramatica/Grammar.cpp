@@ -79,6 +79,7 @@ void Grammar::ReadGrammar(const std::string& filename)
     if (std::getline(file, line))
     {
         m_VT = Trim(line);
+
     }
 
     // Read production rules
@@ -91,6 +92,7 @@ void Grammar::ReadGrammar(const std::string& filename)
         {
             std::string left = Trim(line.substr(0, pos));
             std::string right = Trim(line.substr(pos + 2));
+
             m_PRules.insert(std::make_pair(left, right));
         }
     }
@@ -229,6 +231,8 @@ bool Grammar::IsTerminalString(const std::string& inputString)
     return true;
 }
 
+std::mt19937 Grammar::rng(static_cast<unsigned int>(std::time(nullptr))); // Random number generator
+
 std::string Grammar::GenerateWord()
 {
     if (!IsValidGrammar())
@@ -239,7 +243,7 @@ std::string Grammar::GenerateWord()
 
     std::string currentString = m_startSymbol;
     std::string progress = m_startSymbol; // For tracking progress
-    std::mt19937 rng(static_cast<unsigned int>(std::time(nullptr))); // Random number generator
+    
 
     int maxIterations = 100;
     int iterationCount = 0;

@@ -5,6 +5,8 @@
 #include <cctype>
 #include <string>
 #include <sstream>
+#include <random>
+#include <ctime>
 
 class Grammar
 {
@@ -32,6 +34,7 @@ private:
 	std::string m_VT;
 	std::string m_startSymbol;
 	std::multimap<std::string, std::string> m_PRules;
+	static std::mt19937 rng;
 
 	// Utility function to trim spaces from a string
 	std::string Trim(const std::string& str) 
