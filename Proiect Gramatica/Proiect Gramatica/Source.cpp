@@ -6,7 +6,8 @@
 #define RESET   "\033[0m"
 #define GREEN   "\033[32m"
 #define RED     "\033[31m"
-#define PURPLE   "\033[35m"
+#define PURPLE  "\033[35m"
+#define GREY	"\033[90m"
 
 void displayHeader() {
 	std::cout << "\033[1;33m\n==============================\n";
@@ -53,7 +54,8 @@ int main()
 		std::cout << "3. Display equivalent automaton\n";
 		std::cout << "4. Check if a word is accepted by the automaton\n";
 		std::cout << "5. Generate a word in G and check if it is accepted by the automaton\n";
-		std::cout << "6. Quit\n" RESET;
+		std::cout << "6. Clear screen\n";
+		std::cout << "7. Quit\n";
 
 		int choice;
 		std::cout << PURPLE "Enter your choice: ";
@@ -76,7 +78,7 @@ int main()
 				std::cin >> n;
 				if (n <= 0)
 				{
-					std::cout << RED "Invalid number of words. Try again!";
+					std::cout << RED "Invalid number of words. Try again!\n" << RESET;
 				}
 				else
 				{
@@ -120,10 +122,14 @@ int main()
 			std::cout << "The word is " << (accepted ? GREEN "accepted" : RED "rejected") << RESET << " by the automaton.\n";
 			break;
 		case 6:
+			system("clear || cls");
+			break;
+		case 7:
 			std::cout << GREEN "Exiting the program. Goodbye!\n" << RESET;
 			return 0;
 		default:
-			std::cout << RED "Invalid choice. Please try again!\n";
+			std::cout << RED "Invalid choice. Please try again!\n" << RESET;
+			std::cout << GREY << "*Enter a number between 1 and 6.\n" << RESET;
 		}
 	}
 	return 0;
