@@ -1,7 +1,8 @@
 S
-S A B
+S A B C D
 a b
 S -> aA
-A ->
 A -> bB
-B -> aS
+B -> aC
+C -> bD
+D -> aS

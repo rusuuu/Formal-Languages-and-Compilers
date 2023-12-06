@@ -357,12 +357,27 @@ bool FiniteAutomaton::CheckWord(std::string word)
 		char letter = std::get<1>(currentFront)[0];
 		currentState = std::get<0>(currentFront);
 
+		std::cout << currentState << " " << currentWord << std::endl;
+		std::queue<std::tuple<std::string, std::string>> statesQueueCopy = statesQueue;
+		std::cout << std::endl;
+		while (!statesQueueCopy.empty()) 
+		{
+			std::tuple<std::string, std::string> state = statesQueueCopy.front();
+			std::string stateName = std::get<0>(state);
+			std::string stateAbbreviation = std::get<1>(state);
+
+			std::cout << stateName << " " << stateAbbreviation << std::endl;
+
+			statesQueueCopy.pop();
+		}
+		std::cout << std::endl << std::endl;
+
 		auto iterator = std::find(m_F.begin(), m_F.end(), currentState);
 
 		if (iterator != m_F.end())
 			return true;
 
-		if (currentWord.size() > 1)
+		if (currentWord.size() > 0)
 		{
 			for (int index = 0; index < m_delta.size(); index++)
 			{

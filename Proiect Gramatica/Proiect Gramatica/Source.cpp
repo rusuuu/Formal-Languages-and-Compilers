@@ -17,7 +17,7 @@ void displayHeader() {
 
 int main()
 {
-	std::string filePath1 = "Rules.txt";
+	/*std::string filePath1 = "Rules.txt";
 	std::string filePath2 = "AutomatonInput.txt";
 
 	Grammar grammar;
@@ -100,7 +100,6 @@ int main()
 			automaton.PrintAutomaton();
 			break;
 		case 4:
-			//automaton.ReadAutomaton(filePath2);
 			if (automaton.VerifyAutomaton())
 			{
 				std::cout << RED "Automaton not valid!\n";
@@ -108,7 +107,6 @@ int main()
 			else
 			{
 				std::cout << "Enter a word to check: ";
-				//std::string word;
 				std::cin >> word;
 				accepted = automaton.CheckWord(word);
 				std::cout << "The word is " << (accepted ? GREEN "accepted" : RED "rejected") << RESET << " by the automaton.\n";
@@ -132,6 +130,16 @@ int main()
 			std::cout << GREY << "*Enter a number between 1 and 6.\n" << RESET;
 		}
 	}
-	return 0;
+	return 0;*/
+
+	std::string filePath1 = "Rules.txt";
+	std::string filePath2 = "AutomatonInput.txt";
+
+	Grammar grammar;
+	FiniteAutomaton automaton;
+
+	automaton.ReadAutomaton(filePath2);
+	automaton.CheckWord("111");
+
 }
 
