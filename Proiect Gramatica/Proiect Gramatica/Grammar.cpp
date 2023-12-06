@@ -100,6 +100,21 @@ void Grammar::ReadGrammar(const std::string& filename)
     file.close();
 }
 
+void Grammar::PrintGrammar()
+{
+    std::cout << "Non-terminal Symbols (VN): " << m_VN << "\n";
+
+    std::cout << "Terminal Symbols (VT): " << m_VT << "\n";
+
+    std::cout << "Start Symbol: " << m_startSymbol << "\n";
+
+    std::cout << "Production Rules:\n";
+    for (const auto& rule : m_PRules)
+    {
+        std::cout << rule.first << " -> " << rule.second << "\n";
+    }
+}
+
 void Grammar::DisplayGrammar(const std::string& filename)
 {
 

@@ -18,6 +18,7 @@ public:
 	bool IsValidGrammar();
 	void DisplayGrammar(const std::string& filename);
 	void ReadGrammar(const std::string& filename);
+	void PrintGrammar();
 	bool IsRegular();
 	bool IsTerminalString(const std::string& inputString);
 	std::string GenerateWord();
@@ -78,3 +79,19 @@ private:
 //B->aC
 //C->bD
 //D->aS
+
+//S
+//S A B
+//a b c d
+//S->aA
+//A->bB
+//B->cS
+//S->d
+
+//S
+//S A B
+//a b
+//S->aA
+//A ->
+//A->bB
+//B->aS
