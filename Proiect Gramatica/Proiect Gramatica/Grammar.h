@@ -16,7 +16,6 @@ public:
 	Grammar();
 
 	bool IsValidGrammar();
-	void DisplayGrammar(const std::string& filename);
 	void ReadGrammar(const std::string& filename);
 	void PrintGrammar();
 	bool IsRegular();

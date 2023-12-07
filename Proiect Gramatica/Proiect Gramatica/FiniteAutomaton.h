@@ -18,7 +18,6 @@ public:
 	FiniteAutomaton();
 
 	bool VerifyAutomaton();
-	void DisplayAutomaton(const std::string& filename);
 	void ReadAutomaton(const std::string& filename);
 	void PrintAutomaton();
 	bool CheckWord(std::string word);

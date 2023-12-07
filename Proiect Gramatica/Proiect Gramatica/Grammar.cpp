@@ -115,60 +115,6 @@ void Grammar::PrintGrammar()
     }
 }
 
-void Grammar::DisplayGrammar(const std::string& filename)
-{
-
-    std::ifstream file(filename);
-    if (!file.is_open())
-    {
-        std::cerr << "Unable to open file\n";
-        return;
-    }
-
-    std::string line;
-
-    // Read start symbol
-    if (std::getline(file, line))
-    {
-        m_startSymbol = Trim(line);
-        std::cout << "Start symbol: " << m_startSymbol << "\n";
-    }
-
-    // Read non-terminals
-    if (std::getline(file, line))
-    {
-        m_VN = Trim(line);
-        std::cout << "Non-terminals: " << m_VN << "\n";
-    }
-
-    // Read terminals
-    if (std::getline(file, line))
-    {
-        m_VT = Trim(line);
-        std::cout << "Terminals: " << m_VT << "\n";
-    }
-
-    // Read production rules
-    std::cout << "Production rules:\n";
-    while (std::getline(file, line))
-    {
-        line = Trim(line);
-        size_t pos = line.find("->");
-        if (pos != std::string::npos)
-        {
-            std::string left = Trim(line.substr(0, pos));
-            std::string right = Trim(line.substr(pos + 2));
-
-            m_PRules.insert(std::make_pair(left, right));
-            std::cout << "New print: " << left << " -> " << right << "\n";
-        }
-    }
-
-    file.close();
-}
-
-
-
 bool Grammar::IsRegular()
 {
     bool isRightLinear = true;
