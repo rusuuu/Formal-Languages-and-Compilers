@@ -31,6 +31,18 @@ FiniteAutomaton::FiniteAutomaton()
 
 bool FiniteAutomaton::VerifyAutomaton()
 {
+	// Check if Q is empty
+	if (m_Q.size() == 0)
+		return false;
+
+	// Check if sigma is empty
+	if (m_sigma.size() == 0)
+		return false;
+
+	// Check if q0 is empty
+	if (m_q0.size() == 0)
+		return false;
+
 	// Check if F is empty
 	if (m_F.size() == 0) 
 		return false;
