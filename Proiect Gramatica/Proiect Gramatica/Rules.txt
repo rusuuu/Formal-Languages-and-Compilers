@@ -1,7 +1,9 @@
 S
-S A B
-a b c d
-S -> aA
-A -> bB
-B -> cS
-S -> d
+S A B C
+a b c d e
+S -> aB
+B -> aC
+A -> bC
+B ->c
+C -> d
+C -> eA

@@ -60,17 +60,26 @@ int main()
 
 		std::cout << PURPLE "Enter your choice: ";
 		std::cin >> choice;
+
 		std::cout << std::endl << RESET;
 
-		switch (choice)
+		if (std::cin.fail())
 		{
-		case 1:
+			std::cin.clear();
+			std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+			std::cout << RED "You entered a character. Please enter a number!\n";
+		}
+		else
+		{
+			switch (choice)
+			{
+			case 1:
 			{
 				std::cout << "Grammar:\n\n";
 				grammar.PrintGrammar();
 				break;
 			}
-		case 2:
+			case 2:
 			{
 				std::string word;
 
@@ -78,29 +87,39 @@ int main()
 				std::cout << "Enter the number of words to generate: ";
 				std::cin >> number;
 
-				while (number <= 0)
-				{
-					std::cout << RED "Invalid number of words. Try again!\n" << RESET;
-					std::cout << "Enter the number of words to generate: ";
-					std::cin >> number;
 
+				if (std::cin.fail())
+				{
+					std::cin.clear();
+					std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+					std::cout << RED "You entered a character. Please enter a number!\n";
 				}
-
-				std::cout << "\nGenerated words:\n\n";
-				for (int index = 0; index < number; index++)
+				else
 				{
-					word = grammar.GenerateWord();
-					std::cout << "Generated word " << index + 1 << ": " << word << std::endl << std::endl;
+					while (number <= 0)
+					{
+						std::cout << RED "Invalid number of words. Try again!\n" << RESET;
+						std::cout << "Enter the number of words to generate: ";
+						std::cin >> number;
+
+					}
+
+					std::cout << "\nGenerated words:\n\n";
+					for (int index = 0; index < number; index++)
+					{
+						word = grammar.GenerateWord();
+						std::cout << "Generated word " << index + 1 << ": " << word << std::endl << std::endl;
+					}
 				}
 				break;
 			}
-		case 3:
+			case 3:
 			{
 				std::cout << "Equivalent automaton:\n\n";
 				automaton.PrintAutomaton();
 				break;
 			}
-		case 4:
+			case 4:
 			{
 				if (!automaton.VerifyAutomaton())
 				{
@@ -117,32 +136,32 @@ int main()
 				}
 				break;
 			}
-		case 5:
+			case 5:
 			{
 				std::string word;
 
 				std::cout << "Generated word in G:\n";
 				word = grammar.GenerateWord();
-				//std::cout << "\nChecking if it is accepted by the automaton...\n";
 				bool accepted = automaton.CheckWord(word);
 				std::cout << "The word is " << (accepted ? GREEN "accepted" : RED "rejected") << RESET << " by the automaton.\n";
 				break;
 			}
-		case 6:
+			case 6:
 			{
 				system("clear || cls");
 
 				break;
 			}
-		case 7:
+			case 7:
 			{
 				std::cout << GREEN "Exiting the program. Goodbye!\n" << RESET;
 				return 0;
 			}
-		default:
+			default:
 			{
 				std::cout << RED "Invalid choice. Please try again!\n" << RESET;
 				std::cout << GREY << "*Enter a number between 1 and 6.\n" << RESET;
+			}
 			}
 		}
 	} while (choice>=0 && choice <=7);
