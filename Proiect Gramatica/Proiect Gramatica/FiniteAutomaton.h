@@ -26,13 +26,12 @@ public:
 
 private:
 
-	std::vector<std::string> m_Q; //multime nevida de elemente finite numite stari
-	std::string m_sigma; //alfabet de intrare (multime nevida)
-	std::string m_q0; //stare initiala
-	std::vector<std::string> m_F; //multimea starilor finale
-	std::vector<std::tuple<std::string, char, std::vector<std::string>>> m_delta; //tranzitiile
+	std::vector<std::string> m_Q;
+	std::string m_sigma;
+	std::string m_q0;
+	std::vector<std::string> m_F;
+	std::vector<std::tuple<std::string, char, std::vector<std::string>>> m_delta;
 
-	// Utility function to trim spaces from a string
 	std::string Trim(const std::string& str)
 	{
 		auto start = str.find_first_not_of(" \t");
@@ -40,7 +39,6 @@ private:
 		return start == std::string::npos ? "" : str.substr(start, end - start + 1);
 	}
 
-	// Utility function to split a string by spaces
 	std::vector<std::string> Split(const std::string& str)
 	{
 		std::istringstream iss(str);

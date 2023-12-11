@@ -203,8 +203,7 @@ std::string Grammar::GenerateWord()
     }
 
     std::string currentString = m_startSymbol;
-    std::string progress = m_startSymbol; // For tracking progress
-    
+    std::string progress = m_startSymbol; 
 
     int maxIterations = 100;
     int iterationCount = 0;
@@ -213,7 +212,6 @@ std::string Grammar::GenerateWord()
     {
         std::vector<std::pair<std::string, std::string>> applicableProductions;
 
-        // Find all applicable productions
         for (const auto& rule : m_PRules) 
         {
             size_t pos = currentString.find(rule.first);
@@ -225,20 +223,17 @@ std::string Grammar::GenerateWord()
 
         if (applicableProductions.empty()) 
         {
-            break; // No applicable productions, break the loop
+            break;
         }
 
-        // Randomly select one production
         std::uniform_int_distribution<int> dist(0, applicableProductions.size() - 1);
         auto selectedProduction = applicableProductions[dist(rng)];
 
-        // Apply the selected production
         size_t pos = currentString.find(selectedProduction.first);
         if (pos != std::string::npos) {
             currentString.replace(pos, selectedProduction.first.length(), selectedProduction.second);
         }
 
-        // Update progress
         progress += " -> " + currentString;
 
         iterationCount++;

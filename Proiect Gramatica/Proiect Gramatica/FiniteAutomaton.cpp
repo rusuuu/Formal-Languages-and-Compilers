@@ -31,27 +31,21 @@ FiniteAutomaton::FiniteAutomaton()
 
 bool FiniteAutomaton::VerifyAutomaton()
 {
-	// Check if Q is empty
 	if (m_Q.size() == 0)
 		return false;
 
-	// Check if sigma is empty
 	if (m_sigma.size() == 0)
 		return false;
 
-	// Check if q0 is empty
 	if (m_q0.size() == 0)
 		return false;
 
-	// Check if F is empty
 	if (m_F.size() == 0) 
 		return false;
 
-	// Check if initial state is an element of Q
 	if (ElementIsInQ(m_Q, m_q0) == false)
 		return false;
 
-	//Check if characters from sigma are elements of Q
 	for (int index = 0; index < m_sigma.length(); index++)
 	{
 		std::string elements;
@@ -59,7 +53,6 @@ bool FiniteAutomaton::VerifyAutomaton()
 		if (ElementIsInQ(m_Q, elements)) return false;
 	}
 
-	//Check if elements from delta are formed from characters that are elements of sigma and Q
 	for (int index1 = 0; index1 < m_delta.size(); index1++)
 	{
 		if (!ElementIsInQ(m_Q, std::get<0>(m_delta[index1]))) return false;
@@ -70,7 +63,6 @@ bool FiniteAutomaton::VerifyAutomaton()
 			if (!ElementIsInQ(m_Q, std::get<2>(m_delta[index1])[index2])) return false;
 	}
 
-	//Check if at least a transition from delta has q0 as an initial state
 	int index = 0;
 	bool valid = false;
 	while (index < m_delta.size())
@@ -100,31 +92,26 @@ void FiniteAutomaton::ReadAutomaton(const std::string& filename)
 
 	std::string line;
 
-	// Read states
 	if (std::getline(file, line))
 	{
 		m_Q = Split(Trim(line));
 	}
 
-	// Read input alphabet
 	if (std::getline(file, line))
 	{
 		m_sigma = Trim(line);
 	}
 
-	// Read initial state
 	if (std::getline(file, line))
 	{
 		m_q0 = Trim(line);
 	}
 
-	// Read final states
 	if (std::getline(file, line))
 	{
 		m_F = Split(Trim(line));
 	}
 
-	// Read transitions
 	while (std::getline(file, line))
 	{
 		line = Trim(line);
@@ -136,7 +123,6 @@ void FiniteAutomaton::ReadAutomaton(const std::string& filename)
 			char symbol = tokens[1][0];
 			std::vector<std::string> nextStates;
 
-			// Handle "\0" as an empty string
 			for (size_t i = 2; i < tokens.size(); ++i)
 			{
 				if (tokens[i] != "\\0")
@@ -245,56 +231,49 @@ bool FiniteAutomaton::IsDeterministic()
 
 FiniteAutomaton FiniteAutomaton::GrammarToFiniteAutomaton(Grammar grammar)
 {
-	//Create grammar components
 	std::string VN = grammar.GetVN();
 	std::string VT = grammar.GetVT();
 	std::string startSymbol = grammar.GetStartSymbol();
 	std::multimap<std::string, std::string> PRules = grammar.GetPRules();
 
-	//Create automaton components
 	std::vector<std::string> Q;
 	std::string sigma;
 	std::string q0;
 	std::vector<std::string> F;
 	std::vector<std::tuple<std::string, char, std::vector<std::string>>> delta;
+	std::string T("T");
 
-	//S -> m_q0
 	q0 = startSymbol;
 
-	//Create states (VN -> Q)
 	for(char letter: VN)
 	{
 		if(letter!=' ') Q.push_back(std::string(1, letter));
 	}
 
-	//Create alphabet (VT -> sigma)
 	for (char letter : VT)
 	{
 		if (letter != ' ') sigma.push_back(letter);
 	}
 
-	//Create transitions P -> delta
 	for(const auto& production: PRules)
 	{
 		std::string firstPart = production.first;
 		const auto& secondPart = production.second;
 		std::vector<std::string> thirdElement;
 
-		if (secondPart.size() < 1) //For productions that contain lambda
+		if (secondPart.size() < 1)
 		{
-			// Check if firstPart is not already in m_F
 			if (std::find(F.begin(), F.end(), firstPart) == F.end()) F.push_back(firstPart);
 			thirdElement.push_back(firstPart);
 		}
-		else //For productions that don't contain lambda
+		else
 		{
 			if (secondPart.size() >= 2)
 				thirdElement.push_back(std::string(1, secondPart[1]));
 			else
-				thirdElement.push_back(firstPart);
+				thirdElement.push_back(T);
 		}
 
-		// Search for an existing tuple with the same firstPart and secondPart[0]
 		auto it = std::find_if(delta.begin(), delta.end(),
 			[&](const auto& tuple)
 			{
@@ -303,30 +282,26 @@ FiniteAutomaton FiniteAutomaton::GrammarToFiniteAutomaton(Grammar grammar)
 
 		if (it != delta.end())
 		{
-			//There is already a transition that contains the same first element and path so we only add the second element next to the existing ones if it's the case
 			std::get<2>(*it).insert(std::end(std::get<2>(*it)), std::begin(thirdElement), std::end(thirdElement));
 		}
 		else
 		{
-			//There isn't any transition that contains the same first element and path so we make a new one
 			delta.push_back(std::make_tuple(firstPart, secondPart[0], thirdElement));
 		}
 	}
 
-	// Check for grammar loops
 	for (const auto& transition : delta)
 	{
 		std::string state = std::get<0>(transition);
 		char symbol = std::get<1>(transition);
 		std::vector<std::string> next_states = std::get<2>(transition);
 
-		// Check if there's a loop in the automaton
 		if (std::find(next_states.begin(), next_states.end(), state) != next_states.end()) 
 		{
-			// Add the found state if it isn't already in F
-			if (std::find(F.begin(), F.end(), state) == F.end()) F.push_back(state);
+			if (std::find(F.begin(), F.end(), T) == F.end()) F.push_back(T);
 		}
 	}
+
 
 	FiniteAutomaton automaton(Q, sigma, q0, F, delta);
 	return automaton;

@@ -22,7 +22,6 @@ public:
 	bool IsTerminalString(const std::string& inputString);
 	std::string GenerateWord();
 	bool IsNonTerminal(const char character);
-	//bool operator==(const std::string& other);
 
 	std::string GetVN();
 	std::string GetVT();
@@ -36,7 +35,6 @@ private:
 	std::multimap<std::string, std::string> m_PRules;
 	static std::mt19937 rng;
 
-	// Utility function to trim spaces from a string
 	std::string Trim(const std::string& str) 
 	{
 		auto start = str.find_first_not_of(" \t");
@@ -44,7 +42,6 @@ private:
 		return start == std::string::npos ? "" : str.substr(start, end - start + 1);
 	}
 
-    // Utility function to split a string by spaces
     std::vector<std::string> Split(const std::string& str) 
 	{
         std::istringstream iss(str);
