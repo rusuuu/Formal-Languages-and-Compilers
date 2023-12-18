@@ -203,8 +203,8 @@ std::string Grammar::GenerateWord()
     }
 
     std::string currentString = m_startSymbol;
-    std::string progress = m_startSymbol; 
-
+    std::string progress = m_startSymbol;
+   
     int maxIterations = 100;
     int iterationCount = 0;
 
@@ -212,10 +212,10 @@ std::string Grammar::GenerateWord()
     {
         std::vector<std::pair<std::string, std::string>> applicableProductions;
 
-        for (const auto& rule : m_PRules) 
+        for (const auto& rule : m_PRules)
         {
             size_t pos = currentString.find(rule.first);
-            if (pos != std::string::npos) 
+            if (pos != std::string::npos)
             {
                 applicableProductions.emplace_back(rule.first, rule.second);
             }
@@ -234,7 +234,7 @@ std::string Grammar::GenerateWord()
             currentString.replace(pos, selectedProduction.first.length(), selectedProduction.second);
         }
 
-        progress += " -> " + currentString;
+        //progress += " -> " + currentString;
 
         iterationCount++;
     }
@@ -243,6 +243,6 @@ std::string Grammar::GenerateWord()
         std::cerr << "Reached maximum iterations, might be stuck in a loop\n";
     }
 
-    std::cout << "The process: " << progress << std::endl;
+    
     return currentString;
 }

@@ -1,4 +1,5 @@
 #include <iostream>
+#include <unordered_set>
 
 #include "Grammar.h"
 #include "FiniteAutomaton.h" 
@@ -82,6 +83,7 @@ int main()
 			case 2:
 			{
 				std::string word;
+				std::unordered_set<std::string> checkUniqueness;
 
 				int number;
 				std::cout << "Enter the number of words to generate: ";
@@ -101,14 +103,21 @@ int main()
 						std::cout << RED "Invalid number of words. Try again!\n" << RESET;
 						std::cout << "Enter the number of words to generate: ";
 						std::cin >> number;
-
 					}
 
 					std::cout << "\nGenerated words:\n\n";
 					for (int index = 0; index < number; index++)
 					{
 						word = grammar.GenerateWord();
-						std::cout << "Generated word " << index + 1 << ": " << word << std::endl << std::endl;
+						auto it = checkUniqueness.find(word);
+
+						if (it == checkUniqueness.end())
+						{
+							checkUniqueness.insert(word);
+							std::cout << "Generated word " << index + 1 << ": " << word << std::endl << std::endl;
+						}
+						else
+							index--;
 					}
 				}
 				break;

@@ -24,6 +24,10 @@ public:
 	bool IsDeterministic();
 	FiniteAutomaton GrammarToFiniteAutomaton(Grammar grammar);
 
+	int CurrentStateToIndex(std::string& currentState, std::string& word);
+	std::string IndexToCurrentState(int index);
+
+
 private:
 
 	std::vector<std::string> m_Q;
