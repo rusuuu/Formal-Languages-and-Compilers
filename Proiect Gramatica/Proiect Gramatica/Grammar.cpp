@@ -194,12 +194,12 @@ bool Grammar::IsTerminalString(const std::string& inputString)
 
 std::mt19937 Grammar::rng(static_cast<unsigned int>(std::time(nullptr))); // Random number generator
 
-std::string Grammar::GenerateWord()
+std::pair<std::string, std::string> Grammar::GenerateWord()
 {
     if (!IsValidGrammar())
     {
         std::cerr << "Invalid grammar, cannot generate word\n";
-        return "";
+        return std::make_pair("","");
     }
 
     std::string currentString = m_startSymbol;
@@ -234,7 +234,7 @@ std::string Grammar::GenerateWord()
             currentString.replace(pos, selectedProduction.first.length(), selectedProduction.second);
         }
 
-        //progress += " -> " + currentString;
+        progress += " -> " + currentString;
 
         iterationCount++;
     }
@@ -244,5 +244,5 @@ std::string Grammar::GenerateWord()
     }
 
     
-    return currentString;
+    return std::make_pair(currentString, progress);
 }

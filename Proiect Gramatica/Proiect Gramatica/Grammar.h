@@ -20,7 +20,7 @@ public:
 	void PrintGrammar();
 	bool IsRegular();
 	bool IsTerminalString(const std::string& inputString);
-	std::string GenerateWord();
+	std::pair<std::string, std::string> GenerateWord();
 	bool IsNonTerminal(const char character);
 
 	std::string GetVN();

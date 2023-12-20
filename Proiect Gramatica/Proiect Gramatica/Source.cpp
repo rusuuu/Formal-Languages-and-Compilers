@@ -82,7 +82,7 @@ int main()
 			}
 			case 2:
 			{
-				std::string word;
+				std::string word, progress;
 				std::unordered_set<std::string> checkUniqueness;
 
 				int number;
@@ -108,12 +108,16 @@ int main()
 					std::cout << "\nGenerated words:\n\n";
 					for (int index = 0; index < number; index++)
 					{
-						word = grammar.GenerateWord();
+						std::pair<std::string, std::string> generatedWord = grammar.GenerateWord();
+						word = generatedWord.first;
+						progress = generatedWord.second;
+
 						auto it = checkUniqueness.find(word);
 
 						if (it == checkUniqueness.end())
 						{
 							checkUniqueness.insert(word);
+							std::cout << "Generation steps: " << progress << std::endl;
 							std::cout << "Generated word " << index + 1 << ": " << word << std::endl << std::endl;
 						}
 						else
@@ -150,14 +154,14 @@ int main()
 				std::string word;
 
 				std::cout << "Generated word in G:\n";
-				word = grammar.GenerateWord();
+				word = grammar.GenerateWord().first;
 				bool accepted = automaton.CheckWord(word);
 				std::cout << "The word is " << (accepted ? GREEN "accepted" : RED "rejected") << RESET << " by the automaton.\n";
 				break;
 			}
 			case 6:
 			{
-				system("clear || cls");
+				system("clear || cls"); 
 
 				break;
 			}

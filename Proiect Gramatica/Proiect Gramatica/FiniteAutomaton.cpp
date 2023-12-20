@@ -172,47 +172,21 @@ void FiniteAutomaton::PrintAutomaton()
 	}
 }
 
-int FiniteAutomaton::CurrentStateToIndex(std::string &currentState, std::string &word)
-{
-	for (int index = 0; index < m_delta.size(); index++)
-	{
-		if (std::get<0>(m_delta[index]) == currentState && std::get<1>(m_delta[index]) == word[0])
-		{
-			return index;
-		}
-	}
-	return -1;
-}
-
-std::string FiniteAutomaton::IndexToCurrentState(int index)
-{
-	for (int Index = 0; Index < m_delta.size(); Index++)
-	{
-		if (index == Index)
-			return std::get<0>(m_delta[index]);
-	}
-
-	return std::string();
-}
-
 bool FiniteAutomaton::CheckWord(std::string word)
 {
 	if (word.size() < 1) return false;
 
 	std::string currentState = m_q0;
-	//std::queue<std::tuple<std::string, std::string>> statesQueue;
-	std::queue<std::tuple<int, std::string>> statesQueue;
-	//statesQueue.push(std::make_tuple(currentState, word));
-	statesQueue.push(std::make_tuple(CurrentStateToIndex(currentState, word), word));
+	std::queue<std::tuple<std::string, std::string>> statesQueue;
+	statesQueue.push(std::make_tuple(currentState, word));
 
 	std::vector<std::string> futureStates;
 	while (!statesQueue.empty())
 	{
-		//std::tuple<std::string, std::string> currentFront = statesQueue.front();
-		std::tuple<int, std::string> currentFront = statesQueue.front();
+		std::tuple<std::string, std::string> currentFront = statesQueue.front();
+		
 		std::string currentWord = std::get<1>(currentFront);
 		char letter = std::get<1>(currentFront)[0];
-		currentState = IndexToCurrentState(std::get<0>(currentFront));
 
 		auto iterator = std::find(m_F.begin(), m_F.end(), currentState);
 
@@ -237,7 +211,7 @@ bool FiniteAutomaton::CheckWord(std::string word)
 
 			for (auto state : futureStates)
 			{
-				statesQueue.push(std::make_tuple(CurrentStateToIndex(state, currentWord), currentWord.substr(1)));
+				statesQueue.push(std::make_tuple(state, currentWord.substr(1)));
 			}
 		}
 		statesQueue.pop();
