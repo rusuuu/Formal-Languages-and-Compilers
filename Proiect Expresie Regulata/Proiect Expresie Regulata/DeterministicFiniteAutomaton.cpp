@@ -179,31 +179,32 @@ bool DeterministicFiniteAutomaton::CheckWord(std::string word)
 	std::string currentState = m_q0;
 	std::string currentWord = word;
 
-	while(!currentWord.empty())
+	for (char letter : word)
 	{
-		auto iterator = std::find(m_F.begin(), m_F.end(), currentState);
-
-		if (iterator != m_F.end())
-			return true;
+		if (m_sigma.find(letter) == -1) return false;
 
 		for (int index = 0; index < m_delta.size(); index++)
 		{
-			if (std::get<0>(m_delta[index]) == currentState && std::get<1>(m_delta[index]) == currentWord[0])
+			if (std::get<0>(m_delta[index]) == currentState && std::get<1>(m_delta[index]) == letter)
 			{
-				const auto& nextState = std::get<2>(m_delta[index])[0];
+				const auto& nextStates = std::get<2>(m_delta[index]);
 
-				if (nextState.size() > 0)
-				{
-					currentState = nextState;
-					break;
-				}
+				if (nextStates.size() > 0)
+					currentState = nextStates[0];
+				else
+					return false;
+
+				break;
 			}
 		}
-
-		currentWord = currentWord.substr(1);
 	}
 
-	return false;
+	auto iterator = std::find(m_F.begin(), m_F.end(), currentState);
+
+	if (iterator != m_F.end())
+		return true;
+	else
+		return false;
 }
 
 bool DeterministicFiniteAutomaton::IsDeterministic()
