@@ -1,5 +1,7 @@
 #pragma once
 
+#include "NondeterministicFiniteAutomatonWithLambdaTransitions.h"
+
 #include <vector>
 #include <string>
 #include <tuple>

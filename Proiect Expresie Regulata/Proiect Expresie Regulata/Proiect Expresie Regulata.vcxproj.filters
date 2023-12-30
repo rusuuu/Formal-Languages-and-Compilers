@@ -24,12 +24,18 @@
     <ClCompile Include="RegularExpression.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="NondeterministicFiniteAutomatonWithLambdaTransitions.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DeterministicFiniteAutomaton.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="RegularExpression.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="NondeterministicFiniteAutomatonWithLambdaTransitions.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,5 +1,7 @@
 #pragma once
 
+#include "NondeterministicFiniteAutomatonWithLambdaTransitions.h"
+
 #include <iostream>
 #include <string>
 #include <stack>
@@ -12,6 +14,8 @@ public:
 	RegularExpression();
 
 	void InfixedToPostfixed();
+	NondeterministicFiniteAutomatonWithLambdaTransitions PosfixedToNondeterministicFiniteAutomatonWithLambdaTransitions();
+
 	void Output();
 
 private:

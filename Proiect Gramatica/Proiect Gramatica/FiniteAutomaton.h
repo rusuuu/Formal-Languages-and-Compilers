@@ -1,5 +1,4 @@
 #pragma once
-#pragma once
 
 #include <vector>
 #include <string>
@@ -23,9 +22,6 @@ public:
 	bool CheckWord(std::string word);
 	bool IsDeterministic();
 	FiniteAutomaton GrammarToFiniteAutomaton(Grammar grammar);
-
-	int CurrentStateToIndex(std::string& currentState, std::string& word);
-	std::string IndexToCurrentState(int index);
 
 
 private:

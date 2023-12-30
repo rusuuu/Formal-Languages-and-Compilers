@@ -215,7 +215,7 @@ bool DeterministicFiniteAutomaton::IsDeterministic()
 	return true;
 }
 
-DeterministicFiniteAutomaton NondeterministicFiniteAutomatonWithLambdaTransitionsToDeteministicFiniteAutomaton()
+DeterministicFiniteAutomaton DeterministicFiniteAutomaton::NondeterministicFiniteAutomatonWithLambdaTransitionsToDeteministicFiniteAutomaton()
 {
 	DeterministicFiniteAutomaton DFA;
 
