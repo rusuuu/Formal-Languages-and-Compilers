@@ -147,7 +147,7 @@ NondeterministicFiniteAutomatonWithLambdaTransitions RegularExpression::Posfixed
 			Automaton1.set_F(Automaton1_F);
 
 			//adding initial state to Automaton3's m_q0
-			std::string Automaton3_q0 = Automaton3.get_q0();
+			std::string Automaton3_q0;
 			Automaton3_q0 = Automaton1.get_q0();
 			Automaton3.set_q0(Automaton3_q0);
 
@@ -195,8 +195,8 @@ NondeterministicFiniteAutomatonWithLambdaTransitions RegularExpression::Posfixed
 			Automaton3.set_F(Automaton3_F);
 
 			//adding all the states to Automaton3's Q
-			std::vector<std::string> Automaton3_Q = Automaton3.get_Q();
-			Automaton3_Q.push_back(Automaton1.get_q0());
+			std::vector<std::string> Automaton3_Q;
+			Automaton3_Q.push_back(Automaton3.get_q0());
 
 			for (const std::string& state : Automaton1_Q)
 			{
@@ -414,12 +414,53 @@ NondeterministicFiniteAutomatonWithLambdaTransitions RegularExpression::Posfixed
 			NondeterministicFiniteAutomatonWithLambdaTransitions Automaton = AutomatonStack.top(); AutomatonStack.pop();
 
 			std::string oldInitialState = Automaton.get_q0();
-			std::string oldFinalState = Automaton.get_F()[0];
+			std::string oldFinalState;
 
-			//increasing the number of every state from Automaton's m_Q by 1 to add the new starting and ending states
 			std::vector<std::string> Automaton_Q = Automaton.get_Q();
-			for (std::string& state : Automaton_Q)
+
+			//increasing the number of oldInitialState state by 1
+			std::string numPart = oldInitialState.substr(1);
+			oldInitialState = oldInitialState[0];
+
+			int num = std::stoi(numPart);
+			num += 1;
+
+			oldInitialState = oldInitialState + std::to_string(num);
+
+			//increasing the number of Automaton's final state by 2 and adding it to m_Q
+			std::vector<std::string> Automaton_F;
+			std::string finalState = Automaton.get_F()[0];
+			numPart = finalState.substr(1);
+			finalState = finalState[0];
+
+			num = std::stoi(numPart);
+			num += 1;
+
+			finalState = finalState + std::to_string(num);
+
+			Automaton_Q.push_back(finalState);
+			oldFinalState = finalState;
+
+			numPart = finalState.substr(1);
+			finalState = finalState[0];
+
+			num = std::stoi(numPart);
+			num += 1;
+
+			finalState = finalState + std::to_string(num);
+
+			Automaton_Q.push_back(finalState);
+			Automaton.set_Q(Automaton_Q);
+
+			//adding finalState to Automaton3's m_F
+			Automaton_F.push_back(finalState);
+			Automaton.set_F(Automaton_F);
+
+			//increasing the number of every state from Automaton1 and Automaton2's m_delta by 1 to add the new starting and ending states
+			std::vector<std::tuple<std::string, char, std::vector<std::string>>> Automaton_delta = Automaton.get_delta();
+			for (auto& transition : Automaton_delta)
 			{
+				std::string& state = std::get<0>(transition);
 				std::string numPart = state.substr(1);
 				state = state[0];
 
@@ -427,34 +468,26 @@ NondeterministicFiniteAutomatonWithLambdaTransitions RegularExpression::Posfixed
 				num++;
 
 				state = state + std::to_string(num);
+
+				std::vector<std::string>& states = std::get<2>(transition);
+				for (std::string& state : states)
+				{
+					std::string numPart = state.substr(1);
+					state = state[0];
+
+					int num = std::stoi(numPart);
+					num++;
+
+					state = state + std::to_string(num);
+				}
 			}
-
-			//increasing the number of Automaton's final state by 2 and adding it to m_Q
-			std::vector<std::string> Automaton_F;
-			std::string finalState = Automaton.get_F()[0];
-			std::string numPart = finalState.substr(1);
-			finalState = finalState[0];
-
-			int num = std::stoi(numPart);
-			num += 2;
-
-			finalState = finalState + std::to_string(num);
-
-			Automaton_Q.push_back(finalState);
-			Automaton_Q.push_back(Automaton.get_q0());
-			Automaton.set_Q(Automaton_Q);
-
-			//adding finalState to Automaton3's m_F
-			Automaton_F.push_back(finalState);
-			Automaton.set_F(Automaton_F);
 
 			//adding the new transitions in Automaton
 			std::string emptyString = "";
-			std::vector<std::tuple<std::string, char, std::vector<std::string>>> Automaton_delta = Automaton.get_delta();
-			Automaton_delta.push_back({ Automaton.get_q0(), emptyString[0], {Automaton.get_F()[0]}});
-			Automaton_delta.push_back({ oldFinalState, emptyString[0], {oldInitialState} });
-
+			Automaton_delta.push_back({ Automaton.get_q0(), emptyString[0], {Automaton.get_F()[0],oldInitialState } });
+			Automaton_delta.push_back({ oldFinalState, emptyString[0], {oldInitialState, Automaton.get_F()[0]} });
 			Automaton.set_delta(Automaton_delta);
+
 			stateContor += 2;
 			AutomatonStack.push(Automaton);
 			std::cout << std::endl;
