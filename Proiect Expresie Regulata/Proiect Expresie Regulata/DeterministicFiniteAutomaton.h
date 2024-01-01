@@ -5,6 +5,7 @@
 #include <vector>
 #include <string>
 #include <tuple>
+#include <queue>
 #include <fstream>
 #include <cctype>
 #include <sstream>
@@ -21,11 +22,14 @@ public:
 	void PrintAutomaton();
 	bool CheckWord(std::string word);
 	bool IsDeterministic();
+
+	void setAutomaton(NondeterministicFiniteAutomatonWithLambdaTransitions automaton);
+	NondeterministicFiniteAutomatonWithLambdaTransitions getAutomaton();
+
+	void lambdaClosure(std::vector<std::string>& oldStates, int& stateContor, std::tuple<std::string, char, std::vector<std::string>> newTransition, std::vector<std::string>& Q);
+	void newTransition(std::string &startState, int& stateContor, std::vector<std::string>& Q);
+
 	DeterministicFiniteAutomaton NondeterministicFiniteAutomatonWithLambdaTransitionsToDeteministicFiniteAutomaton();
-
-	int CurrentStateToIndex(std::string& currentState, std::string& word);
-	std::string IndexToCurrentState(int index);
-
 
 private:
 
@@ -34,6 +38,12 @@ private:
 	std::string m_q0;
 	std::vector<std::string> m_F;
 	std::vector<std::tuple<std::string, char, std::vector<std::string>>> m_delta;
+
+	NondeterministicFiniteAutomatonWithLambdaTransitions m_automaton;
+
+	std::vector<std::tuple<std::vector<std::string>, std::vector<std::string>, std::string>> m_lambdaClosures;
+	std::queue<std::string> newStates;
+	std::vector<std::tuple<std::string, char, std::vector<std::string>>> newTransitions;
 
 	std::string Trim(const std::string& str)
 	{
@@ -54,7 +64,3 @@ private:
 		return tokens;
 	}
 };
-
-
-
-

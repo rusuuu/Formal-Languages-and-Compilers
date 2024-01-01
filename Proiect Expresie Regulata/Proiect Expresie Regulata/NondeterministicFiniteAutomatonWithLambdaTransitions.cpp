@@ -103,3 +103,17 @@ std::vector<std::tuple<std::string, char, std::vector<std::string>>> Nondetermin
 {
 	return m_delta;
 }
+
+NondeterministicFiniteAutomatonWithLambdaTransitions& NondeterministicFiniteAutomatonWithLambdaTransitions::operator=(const NondeterministicFiniteAutomatonWithLambdaTransitions& automaton)
+{
+	if (this != &automaton)
+	{
+		m_Q = automaton.m_Q;
+		m_sigma = automaton.m_sigma;
+		m_q0 = automaton.m_q0;
+		m_F = automaton.m_F;
+		m_delta = automaton.m_delta;
+	}
+
+	return *this;
+}

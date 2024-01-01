@@ -5,7 +5,6 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
-#include <queue>
 #include <tuple>
 
 bool ElementIsInQ(std::vector<std::string> m_Q, std::string element)
@@ -215,11 +214,165 @@ bool DeterministicFiniteAutomaton::IsDeterministic()
 	return true;
 }
 
+void DeterministicFiniteAutomaton::setAutomaton(NondeterministicFiniteAutomatonWithLambdaTransitions automaton)
+{
+	m_automaton = automaton;
+}
+
+NondeterministicFiniteAutomatonWithLambdaTransitions DeterministicFiniteAutomaton::getAutomaton()
+{
+	return m_automaton;
+}
+
+void DeterministicFiniteAutomaton::lambdaClosure(std::vector<std::string> &oldStates, int &stateContor, std::tuple<std::string, char, std::vector<std::string>> newTransition, std::vector<std::string> &Q)
+{
+	std::queue<std::string> states;
+	std::vector<std::string> lambdaClosure;
+
+	for(std::string state: oldStates)
+	{
+		states.push(state);
+		lambdaClosure.push_back(state);
+	}
+
+	while(!states.empty())
+	{
+		std::string state = states.front();
+		for (auto& transition : m_automaton.get_delta())
+		{
+			if (std::get<0>(transition) == state && std::get<1>(transition) == '\0')
+			{
+				for (auto& finalState : std::get<2>(transition))
+				{
+					states.push(finalState);
+					lambdaClosure.push_back(finalState);
+				}
+				break;
+			}
+		}
+		states.pop();
+	}
+
+	bool found = false;
+
+	for (const auto& closures : m_lambdaClosures)
+	{
+		if (lambdaClosure == std::get<1>(closures))
+		{
+			std::get<2>(newTransition) = { std::get<2>(closures) };
+			newTransitions.push_back(newTransition);
+			found = true;
+			break;
+		}
+	}
+
+	if (!found)
+	{
+		std::string newState = "q" + std::to_string(stateContor);
+		stateContor++;
+
+		newStates.push(newState);
+		m_lambdaClosures.push_back({ oldStates, lambdaClosure, newState });
+		std::get<2>(newTransition) = { newState };
+		newTransitions.push_back(newTransition);
+		Q.push_back(newState);
+	}
+}
+
+void DeterministicFiniteAutomaton::newTransition(std::string &startState, int& stateContor, std::vector<std::string>& Q)
+{
+	std::tuple<std::string, char, std::vector<std::string>> newTransition;
+	std::get<0>(newTransition) = startState;
+
+	std::vector<std::string> oldStates;
+	for (auto& lambdaClosure : m_lambdaClosures)
+	{
+		if(std::get<2>(lambdaClosure)==startState)
+		{
+			oldStates = std::get<1>(lambdaClosure);
+			break;
+		}
+	}
+
+	for (char letter : m_automaton.get_sigma())
+	{
+		std::vector<std::string> finalState;
+		for (std::string state : oldStates)
+		{
+			for (auto& transition : m_automaton.get_delta())
+			{
+
+				if (std::get<0>(transition) == state && std::get<1>(transition) == letter)
+				{
+					finalState.push_back(std::get<2>(transition)[0]);
+					std::get<1>(newTransition) = letter;
+					break;
+				}
+			}
+		}
+
+		if (!finalState.empty()) lambdaClosure(finalState, stateContor, newTransition, Q);
+	}
+}
+
 DeterministicFiniteAutomaton DeterministicFiniteAutomaton::NondeterministicFiniteAutomatonWithLambdaTransitionsToDeteministicFiniteAutomaton()
 {
-	DeterministicFiniteAutomaton DFA;
+	std::vector<std::string> Q;
+	std::string sigma;
+	std::string q0;
+	std::vector<std::string> F;
+	std::vector<std::tuple<std::string, char, std::vector<std::string>>> delta;
 
+	sigma = m_automaton.get_sigma();
+	std::string currentState = m_automaton.get_q0();
+	int stateContor = 0;
 
+	std::queue<std::string> states;
+	std::vector<std::string> lambdaClosure;
+
+	states.push(currentState);
+	lambdaClosure.push_back(currentState);
+
+	while (!states.empty())
+	{
+		std::string state = states.front();
+		for (auto& transition : m_automaton.get_delta())
+		{
+			if (std::get<0>(transition) == state && std::get<1>(transition) == '\0')
+			{
+				for (auto& finalState : std::get<2>(transition))
+				{
+					states.push(finalState);
+					lambdaClosure.push_back(finalState);
+				}
+				break;
+			}
+		}
+		states.pop();
+	}
+
+	std::string newState = "q" + std::to_string(stateContor);
+	stateContor++;
+
+	newStates.push(newState);
+	m_lambdaClosures.push_back({ {currentState}, lambdaClosure, newState });
+	Q.push_back(newState);
+
+	while(!newStates.empty())
+	{
+		newTransition(newStates.front(), stateContor, Q);
+		newStates.pop();
+	}
+
+	delta = newTransitions;
+
+	q0 = Q[0];
+	F = { Q[Q.size() - 1] };
+
+	std::cout << std::endl;
+	std::cout << "DFA: " << std::endl;
+	DeterministicFiniteAutomaton DFA(Q, sigma, q0, F, delta);
+	DFA.PrintAutomaton();
 
 	return DFA;
 }

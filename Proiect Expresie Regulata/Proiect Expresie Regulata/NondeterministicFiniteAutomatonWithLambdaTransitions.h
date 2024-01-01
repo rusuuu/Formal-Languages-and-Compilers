@@ -27,6 +27,8 @@ public:
 	std::vector<std::string> get_F();
 	std::vector<std::tuple<std::string, char, std::vector<std::string>>> get_delta();
 
+	NondeterministicFiniteAutomatonWithLambdaTransitions& operator=(const NondeterministicFiniteAutomatonWithLambdaTransitions& automaton);
+
 private:
 
 	std::vector<std::string> m_Q;

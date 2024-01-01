@@ -234,10 +234,9 @@ void RegularExpression::OrOperator(int &stateContor)
 	}
 
 	//adding the new transitions in Automaton3
-	std::string emptyString = "";
-	Automaton3_delta.push_back({ Automaton3.get_q0(), emptyString[0], {Automaton1.get_q0(),Automaton2.get_q0()} });
-	Automaton3_delta.push_back({ Automaton1.get_F()[0], emptyString[0], {Automaton3.get_F()[0]} });
-	Automaton3_delta.push_back({ Automaton2.get_F()[0], emptyString[0], {Automaton3.get_F()[0]} });
+	Automaton3_delta.push_back({ Automaton3.get_q0(), '\0', {Automaton1.get_q0(),Automaton2.get_q0()} });
+	Automaton3_delta.push_back({ Automaton1.get_F()[0], '\0', {Automaton3.get_F()[0]} });
+	Automaton3_delta.push_back({ Automaton2.get_F()[0], '\0', {Automaton3.get_F()[0]} });
 
 	Automaton3.set_delta(Automaton3_delta);
 
