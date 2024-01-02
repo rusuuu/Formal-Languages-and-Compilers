@@ -184,7 +184,8 @@ bool FiniteAutomaton::CheckWord(std::string word)
 	while (!statesQueue.empty())
 	{
 		std::tuple<std::string, std::string> currentFront = statesQueue.front();
-		
+
+		currentState = std::get<0>(currentFront);
 		std::string currentWord = std::get<1>(currentFront);
 		char letter = std::get<1>(currentFront)[0];
 
