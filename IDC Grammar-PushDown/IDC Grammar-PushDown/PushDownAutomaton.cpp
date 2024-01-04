@@ -42,7 +42,7 @@ void PushDownAutomaton::PrintAutomaton()
 	std::cout << "Transitions:\n";
 	for (const auto& transition : m_delta)
 	{
-		std::cout << "delta( " << std::get<0>(transition) << ", " << std::get<1>(transition) << ", " << std::get<2>(transition) <<  " ) = { ";
+		std::cout << "delta( " << std::get<0>(transition) << ", " << std::get<1>(transition) << ", " << std::get<2>(transition) << " ) = { ";
 		for (const auto& pushDownElements : std::get<3>(transition))
 		{
 			std::cout << "(" << pushDownElements.first << " , ";
@@ -77,10 +77,10 @@ bool PushDownAutomaton::CheckWord(std::string word)
 		std::stack<std::string> currentStack = std::get<2>(currentFront);
 
 		std::queue<std::tuple<std::string, std::string, std::stack<std::string>>> tempQueue = statesQueue;
-		while(!tempQueue.empty())
+		while (!tempQueue.empty())
 		{
 			std::cout << "CURRENT STATE: " << std::get<0>(tempQueue.front()) << " CURRENT WORD: " << std::get<1>(tempQueue.front()) << " CURRENT STACK: ";
-			while(!std::get<2>(tempQueue.front()).empty())
+			while (!std::get<2>(tempQueue.front()).empty())
 			{
 				std::cout << std::get<2>(tempQueue.front()).top() << " ";
 				std::get<2>(tempQueue.front()).pop();
@@ -113,14 +113,14 @@ bool PushDownAutomaton::CheckWord(std::string word)
 				futureStack.pop();
 				if (!pairInfo.second.empty())
 				{
-					if (pairInfo.second.size()>1)
+					if (pairInfo.second.size() > 1)
 						futureStack.push(pairInfo.second[1]);
 					futureStack.push(pairInfo.second[0]);
 				}
 
 				std::cout << "FUTURE STACK: ";
 				auto tempStack = futureStack;
-				while(!tempStack.empty())
+				while (!tempStack.empty())
 				{
 					std::cout << tempStack.top() << " ";
 					tempStack.pop();
@@ -128,7 +128,7 @@ bool PushDownAutomaton::CheckWord(std::string word)
 				std::cout << std::endl;
 				std::cout << std::endl;
 
-				if(currentWord.size()==0)
+				if (currentWord.size() == 0)
 				{
 					auto iterator = std::find(m_F.begin(), m_F.end(), pairInfo.first);
 
