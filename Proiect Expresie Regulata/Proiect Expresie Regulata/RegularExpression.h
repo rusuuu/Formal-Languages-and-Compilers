@@ -23,6 +23,9 @@ public:
 
 	void Output();
 
+	bool VerifyExpression() const;
+
+
 private:
 
 	std::string m_Infixed;

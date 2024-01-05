@@ -1,0 +1,22 @@
+States: q0 q1 q2 q3 q4 q5 q6 q7 q8 q9 q10 
+Alphabet: abc
+Start State: q0
+Final States: q10 
+Transitions:
+delta(q0, a) -> q1 
+delta(q1, b) -> q2 
+delta(q2, a) -> q3 
+delta(q3, a) -> q4 
+delta(q3, b) -> q5 
+delta(q3, c) -> q6 
+delta(q4, a) -> q7 
+delta(q5, b) -> q8 
+delta(q6, a) -> q9 
+delta(q7, a) -> q4 
+delta(q7, b) -> q5 
+delta(q7, c) -> q6 
+delta(q8, a) -> q4 
+delta(q8, b) -> q5 
+delta(q8, c) -> q6 
+delta(q9, b) -> q10 
+delta(q10, a) -> q9 

@@ -242,8 +242,8 @@ void RegularExpression::OrOperator(int &stateContor)
 
 	stateContor += 2;
 	AutomatonStack.push(Automaton3);
-	std::cout << std::endl;
-	Automaton3.PrintAutomaton();
+	/*std::cout << std::endl;
+	Automaton3.PrintAutomaton();*/
 }
 
 void RegularExpression::ConcatenationOperator(int &stateContor)
@@ -338,8 +338,8 @@ void RegularExpression::ConcatenationOperator(int &stateContor)
 
 	stateContor--;
 	AutomatonStack.push(Automaton3);
-	std::cout << std::endl;
-	Automaton3.PrintAutomaton();
+	/*std::cout << std::endl;
+	Automaton3.PrintAutomaton();*/
 }
 
 void RegularExpression::KleinStarOperator(int &stateContor)
@@ -420,8 +420,8 @@ void RegularExpression::KleinStarOperator(int &stateContor)
 
 	stateContor += 2;
 	AutomatonStack.push(Automaton);
-	std::cout << std::endl;
-	Automaton.PrintAutomaton();
+	/*std::cout << std::endl;
+	Automaton.PrintAutomaton();*/
 }
 
 void RegularExpression::AutomateConstruction(int &stateContor, char &character)
@@ -457,8 +457,8 @@ void RegularExpression::AutomateConstruction(int &stateContor, char &character)
 
 	stateContor += 2;
 	AutomatonStack.push(Automaton);
-	std::cout << std::endl;
-	Automaton.PrintAutomaton();
+	/*std::cout << std::endl;
+	Automaton.PrintAutomaton();*/
 }
 
 NondeterministicFiniteAutomatonWithLambdaTransitions RegularExpression::PosfixedToNondeterministicFiniteAutomatonWithLambdaTransitions()
@@ -494,3 +494,71 @@ void RegularExpression::Output()
 	std::cout << "Postfixed Form: " << m_Postfixed << std::endl;
 	std::cout << std::endl;
 }
+
+bool RegularExpression::VerifyExpression() const 
+{
+	std::stack<char> parentheses;
+	bool lastWasOperand = false;
+	bool lastWasOperator = false;
+	bool lastWasClosure = false;
+	bool lastWasOpeningParenthesis = false;
+
+	for (char ch : m_Infixed) {
+		switch (ch) {
+		case '(':
+			if (lastWasOperand || lastWasClosure) {
+				return false; // No operator between operands or after closure
+			}
+			parentheses.push(ch);
+			lastWasOpeningParenthesis = true;
+			lastWasOperator = false;
+			lastWasOperand = false;
+			lastWasClosure = false;
+			break;
+		case ')':
+			if (parentheses.empty() || lastWasOperator) {
+				return false; // Unbalanced parentheses or operator before closing
+			}
+			parentheses.pop();
+			lastWasOperand = true;
+			lastWasOpeningParenthesis = false;
+			lastWasOperator = false;
+			lastWasClosure = false;
+			break;
+		case '|':
+		case '.':
+			if (lastWasOperator || (!lastWasOperand && !lastWasClosure)) {
+				return false; // Operators should be between operands or closures
+			}
+			lastWasOperator = true;
+			lastWasOperand = false;
+			lastWasClosure = false;
+			break;
+		case '*':
+			if (!lastWasOperand && !lastWasClosure && !lastWasOpeningParenthesis) {
+				return false; // Closure can only follow an operand, another closure, or opening parenthesis
+			}
+			lastWasClosure = true;
+			lastWasOperand = false;
+			lastWasOperator = false;
+			lastWasOpeningParenthesis = false;
+			break;
+		default:
+			if (!isalnum(ch)) {
+				return false; // Invalid character
+			}
+			if (lastWasOperand || lastWasClosure) {
+				return false; // No operator between operands or after closure
+			}
+			lastWasOperand = true;
+			lastWasOperator = false;
+			lastWasClosure = false;
+			lastWasOpeningParenthesis = false;
+			break;
+		}
+	}
+
+	return parentheses.empty() && (lastWasOperand || lastWasClosure);// Valid if all parentheses are closed and the last character was an operand
+}
+
+

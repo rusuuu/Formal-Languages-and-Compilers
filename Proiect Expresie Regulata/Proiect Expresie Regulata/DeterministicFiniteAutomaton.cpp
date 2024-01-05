@@ -1,4 +1,5 @@
 #include "DeterministicFiniteAutomaton.h"
+#include <fstream>
 
 #include <algorithm>
 #include <string>
@@ -141,34 +142,68 @@ void DeterministicFiniteAutomaton::ReadAutomaton(const std::string& filename)
 
 void DeterministicFiniteAutomaton::PrintAutomaton()
 {
-	std::cout << "States: ";
-	for (const auto& state : m_Q)
+	// Define the output file
+	std::ofstream outFile("dfa_output.txt");
+
+	// Check if the file is open
+	if (!outFile.is_open()) 
 	{
-		std::cout << state << " ";
+		std::cerr << "Failed to open file for writing.\n";
+		return;
 	}
-	std::cout << "\n";
 
-	std::cout << "Input Alphabet: " << m_sigma << "\n";
-
-	std::cout << "Initial State: " << m_q0 << "\n";
-
-	std::cout << "Final States: ";
-	for (const auto& finalState : m_F)
-	{
-		std::cout << finalState << " ";
-	}
-	std::cout << "\n";
-
-	std::cout << "Transitions:\n";
-	for (const auto& transition : m_delta)
-	{
-		std::cout << "delta( " << std::get<0>(transition) << ", " << std::get<1>(transition) << " ) = { ";
-		for (const auto& nextState : std::get<2>(transition))
+	// Helper lambda to write to both console and file
+	auto write = [&](const std::string& text) 
 		{
-			std::cout << nextState << " ";
-		}
-		std::cout << "}\n";
+		std::cout << text;
+		outFile << text;
+		};
+
+	write("States: ");
+	if (m_Q.empty()) 
+	{
+		write("No states are defined.\n");
 	}
+	else
+	{
+		for (const auto& state : m_Q)
+		{
+			write(state + " ");
+		}
+		write("\n");
+	}
+
+	write("Alphabet: " + (m_sigma.empty() ? "No alphabet defined.\n" : m_sigma + "\n"));
+	write("Start State: " + (m_q0.empty() ? "No start state defined.\n" : m_q0 + "\n"));
+
+	write("Final States: ");
+	if (m_F.empty()) 
+	{
+		write("No final states defined.\n");
+	}
+	else {
+		for (const auto& finalState : m_F) {
+			write(finalState + " ");
+		}
+		write("\n");
+	}
+
+	write("Transitions:\n");
+	if (m_delta.empty()) {
+		write("No transitions defined.\n");
+	}
+	else {
+		for (const auto& transition : m_delta) {
+			std::string transitionString = "delta(" + std::get<0>(transition) + ", " + std::get<1>(transition) + ") -> ";
+			for (const auto& nextState : std::get<2>(transition)) {
+				transitionString += nextState + " ";
+			}
+			write(transitionString + "\n");
+		}
+	}
+
+	// Close the file
+	outFile.close();
 }
 
 bool DeterministicFiniteAutomaton::CheckWord(std::string word)
@@ -369,10 +404,10 @@ DeterministicFiniteAutomaton DeterministicFiniteAutomaton::NondeterministicFinit
 	q0 = Q[0];
 	F = { Q[Q.size() - 1] };
 
-	std::cout << std::endl;
-	std::cout << "DFA: " << std::endl;
+	//std::cout << std::endl;
+	//std::cout << "DFA: " << std::endl;
 	DeterministicFiniteAutomaton DFA(Q, sigma, q0, F, delta);
-	DFA.PrintAutomaton();
+	//DFA.PrintAutomaton();
 
 	return DFA;
 }

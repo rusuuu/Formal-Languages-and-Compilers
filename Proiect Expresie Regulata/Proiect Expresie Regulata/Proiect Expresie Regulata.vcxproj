@@ -137,6 +137,10 @@
     <ClInclude Include="NondeterministicFiniteAutomatonWithLambdaTransitions.h" />
     <ClInclude Include="RegularExpression.h" />
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="dfa_output.txt" />
+    <Text Include="regular_expression.txt" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
