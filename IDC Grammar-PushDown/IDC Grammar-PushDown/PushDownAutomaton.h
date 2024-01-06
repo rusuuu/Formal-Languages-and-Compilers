@@ -6,6 +6,7 @@
 #include <stack>
 #include <queue>
 #include <tuple>
+#include "Grammar.h"
 
 class PushDownAutomaton
 {
@@ -17,6 +18,8 @@ public:
 	void PrintAutomaton();
 	bool CheckWord(std::string word);
 	bool isDeterministic();
+
+	PushDownAutomaton IDCtoPDAconversion(Grammar grammar);
 
 private:
 

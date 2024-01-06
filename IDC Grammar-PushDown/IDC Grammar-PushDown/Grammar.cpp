@@ -85,8 +85,6 @@ void Grammar::ReadGrammar(const std::string& filename)
 
     }
 
-    
-
     while (std::getline(file, line))
     {
         line = Trim(line);
@@ -680,31 +678,31 @@ void Grammar::RemoveNullProductions()
 
 void Grammar::ConvertToGNF() 
 {
-    std::cout << "\nremove start from rhs\n";
+    std::cout << "\nRemove start from rhs\n";
     RemoveStartSymbolFromRHS();
     PrintGrammar();
 
-    std::cout << "\nremove null\n";
+    std::cout << "\nRemove null\n";
     RemoveNullProductions();
     PrintGrammar();
 
-    std::cout << "\nremove unit\n";
+    std::cout << "\nRemove unit\n";
     RemoveUnitProductions();
     PrintGrammar();
 
-    std::cout << "\nremove unreacheable\n";
+    std::cout << "\nRemove unreacheable\n";
     RemoveUnreachableSymbols();
     PrintGrammar();
 
-    std::cout << "\ncnf\n";
+    std::cout << "\nCNF\n";
     ConvertToCNF();
     PrintGrammar();
 
-    std::cout << "\nremove immediate left recursion\n";
+    std::cout << "\nRemove immediate left recursion\n";
     EliminateImmediateLeftRecursion();
     PrintGrammar();
 
-    std::cout << "\ngnf\n";
+    std::cout << "\nGNF\n";
     ConvertRulesToGNF();
     PrintGrammar();
 

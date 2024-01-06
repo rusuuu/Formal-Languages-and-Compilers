@@ -79,7 +79,7 @@ bool PushDownAutomaton::CheckWord(std::string word)
 		std::queue<std::tuple<std::string, std::string, std::stack<std::string>>> tempQueue = statesQueue;
 		while (!tempQueue.empty())
 		{
-			std::cout << "CURRENT STATE: " << std::get<0>(tempQueue.front()) << " CURRENT WORD: " << std::get<1>(tempQueue.front()) << " CURRENT STACK: ";
+			std::cout << "CURRENT STATE: " << std::get<0>(tempQueue.front()) << "\nCURRENT WORD: " << std::get<1>(tempQueue.front()) << "\nCURRENT STACK: ";
 			while (!std::get<2>(tempQueue.front()).empty())
 			{
 				std::cout << std::get<2>(tempQueue.front()).top() << " ";
@@ -150,4 +150,37 @@ bool PushDownAutomaton::isDeterministic()
 		if (std::get<3>(m_delta[index]).size() > 1) return false;
 
 	return true;
+}
+
+PushDownAutomaton PushDownAutomaton::IDCtoPDAconversion(Grammar grammar)
+{
+	grammar.ConvertToGNF();
+	std::vector<std::string> Q = { "q0" };
+	std::string sigma = grammar.GetVT();
+	std::string gamma = grammar.GetVN();
+	std::string q0 = "q0";
+	std::string Z0 = grammar.GetStartSymbol();
+	std::vector<std::string> F = {};
+	std::vector<std::tuple<std::string, char, std::string, std::vector<std::pair<std::string, std::vector<std::string>>>>> delta;
+
+	auto PRules = grammar.GetPRules(); 
+
+	for (const auto& rule : PRules)
+	{
+		std::string fromState = "q0";
+		char inputSymbol = rule.first[0];
+		std::string toState = "q0";
+		std::vector<std::pair<std::string, std::vector<std::string>>> stackOperations;
+
+		for (char stackSymbol : rule.second)
+		{
+			std::string stackOperation(1, stackSymbol);
+			stackOperations.push_back(std::make_pair(toState, std::vector<std::string>{stackOperation}));
+		}
+
+		delta.push_back(std::make_tuple(fromState, inputSymbol, toState, stackOperations));
+	}
+
+	return PushDownAutomaton(Q, sigma, gamma, q0, Z0, F, delta);
+
 }
