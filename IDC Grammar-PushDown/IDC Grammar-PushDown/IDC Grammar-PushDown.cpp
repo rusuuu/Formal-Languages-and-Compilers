@@ -112,8 +112,7 @@ int main()
 			case 4:
 			{
 				std::cout << "Grammar in GNF form:\n\n";
-				grammar.ConvertToGNF();
-				grammar.PrintGrammar();
+				grammar.ConvertToGNFwithPrint();
 				break;
 			}
 			case 5:

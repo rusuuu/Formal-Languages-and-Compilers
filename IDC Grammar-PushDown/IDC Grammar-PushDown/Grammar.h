@@ -35,6 +35,7 @@ public:
 	bool IsNonTerminal(const char character);
 
 	void ConvertToGNF();
+	void ConvertToGNFwithPrint();
 	bool IsStartSymbolOnRHS();
 	void RemoveStartSymbolFromRHS();
 	void ConvertToCNF();

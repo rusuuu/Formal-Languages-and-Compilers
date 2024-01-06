@@ -676,7 +676,7 @@ void Grammar::RemoveNullProductions()
 
 //------------------------------FNG-------------------------------------------------------------------------------------------
 
-void Grammar::ConvertToGNF() 
+void Grammar::ConvertToGNFwithPrint()
 {
     std::cout << "\nRemove start from rhs\n";
     RemoveStartSymbolFromRHS();
@@ -705,6 +705,24 @@ void Grammar::ConvertToGNF()
     std::cout << "\nGNF\n";
     ConvertRulesToGNF();
     PrintGrammar();
+
+}
+
+void Grammar::ConvertToGNF()
+{
+    RemoveStartSymbolFromRHS();
+    
+    RemoveNullProductions();
+
+    RemoveUnitProductions();
+
+    RemoveUnreachableSymbols();
+
+    ConvertToCNF();
+
+    EliminateImmediateLeftRecursion();
+
+    ConvertRulesToGNF();
 
 }
 
