@@ -23,6 +23,7 @@ int main()
 	Grammar grammar;
 	PushDownAutomaton automaton;
 	std::unordered_set<std::string> checkUniqueness;
+	std::unordered_set<std::string> checkUniqueness2;
 
 	grammar.ReadGrammar(filePath);
 	automaton = automaton.IDCtoPDAconversion(grammar);
@@ -124,11 +125,21 @@ int main()
 			}
 			case 6:
 			{
-				std::string word;
-				word = grammar.GenerateWord();
-				std::cout << "Generated word in G: "<<word<<"\n";
-				
-				bool accepted = automaton.CheckWord(word);
+				std::cout << "\nGenerated word:\n";
+				std::string generatedWord = grammar.GenerateWord();
+
+				auto it = checkUniqueness2.find(generatedWord);
+
+				while (it != checkUniqueness2.end())
+				{
+					generatedWord = grammar.GenerateWord();
+					it = checkUniqueness2.find(generatedWord);
+				}
+
+				checkUniqueness2.insert(generatedWord);
+				std::cout << generatedWord << std::endl << std::endl;
+
+				bool accepted = automaton.CheckWord(generatedWord);
 				std::cout << "The word is " << (accepted ? GREEN "accepted" : RED "rejected") << RESET << " by the automaton.\n";
 				break;
 			}
