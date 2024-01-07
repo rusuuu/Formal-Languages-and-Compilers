@@ -55,10 +55,11 @@ int main()
 		std::cout << "2. Generate a word in grammar\n";
 		std::cout << "3. Display simplified grammar\n";
 		std::cout << "4. Display grammar in GNF form\n";
-		std::cout << "5. Generate a word in G and check if it is accepted by the automaton\n";
-		std::cout << "6. Verify if a word is accepted by the automaton\n";
-		std::cout << "7. Clear screen.\n";
-		std::cout << "8. Quit\n";
+		std::cout << "5. Display push down automaton\n";
+		std::cout << "6. Generate a word in G and check if it is accepted by the automaton\n";
+		std::cout << "7. Verify if a word is accepted by the automaton\n";
+		std::cout << "8. Clear screen.\n";
+		std::cout << "9. Quit\n";
 
 		std::cout << PURPLE "Enter your choice: ";
 		std::cin >> choice;
@@ -117,6 +118,12 @@ int main()
 			}
 			case 5:
 			{
+				std::cout << "Push Down Automaton: \n";
+				automaton.PrintAutomaton();
+				break;
+			}
+			case 6:
+			{
 				std::string word;
 				word = grammar.GenerateWord();
 				std::cout << "Generated word in G: "<<word<<"\n";
@@ -125,7 +132,7 @@ int main()
 				std::cout << "The word is " << (accepted ? GREEN "accepted" : RED "rejected") << RESET << " by the automaton.\n";
 				break;
 			}
-			case 6:
+			case 7:
 			{
 				std::cout << "Insert a word to check: ";
 				std::string word;
@@ -134,13 +141,13 @@ int main()
 				std::cout << "The word is " << (accepted ? GREEN "accepted" : RED "rejected") << RESET << " by the automaton.\n";
 				break;
 			}
-			case 7:
+			case 8:
 			{
 				system("clear || cls");
 
 				break;
 			}
-			case 8:
+			case 9:
 			{
 				std::cout << GREEN "Exiting the program. Goodbye!\n" << RESET;
 				return 0;

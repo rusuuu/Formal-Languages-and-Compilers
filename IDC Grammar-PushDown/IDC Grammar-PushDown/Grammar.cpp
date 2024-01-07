@@ -991,5 +991,3 @@ std::string Grammar::GenerateUniqueNonTerminal()
     return "N" + std::to_string(nonTerminalCount); // Return a unique non-terminal
 }
 
-
-

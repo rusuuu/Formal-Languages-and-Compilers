@@ -62,11 +62,11 @@ bool PushDownAutomaton::CheckWord(std::string word)
 
 	std::string currentState = m_q0;
 	std::stack<std::string> pushDownMemory;
+	pushDownMemory.push("STOP");
 	pushDownMemory.push(m_Z0);
 	std::queue<std::tuple<std::string, std::string, std::stack<std::string>>> statesQueue;
 	statesQueue.push(std::make_tuple(currentState, word, pushDownMemory));
 
-	std::vector<std::pair<std::string, std::vector<std::string>>> futureStates;
 	while (!statesQueue.empty())
 	{
 		std::tuple<std::string, std::string, std::stack<std::string>> currentFront = statesQueue.front();
@@ -79,18 +79,20 @@ bool PushDownAutomaton::CheckWord(std::string word)
 		std::queue<std::tuple<std::string, std::string, std::stack<std::string>>> tempQueue = statesQueue;
 		while (!tempQueue.empty())
 		{
-			std::cout << "CURRENT STATE: " << std::get<0>(tempQueue.front()) << "\nCURRENT WORD: " << std::get<1>(tempQueue.front()) << "\nCURRENT STACK: ";
+			std::cout << "CURRENT STATE: " << std::get<0>(tempQueue.front()) << " CURRENT WORD: " << std::get<1>(tempQueue.front()) << " CURRENT STACK: ";
 			while (!std::get<2>(tempQueue.front()).empty())
 			{
 				std::cout << std::get<2>(tempQueue.front()).top() << " ";
 				std::get<2>(tempQueue.front()).pop();
 			}
 			tempQueue.pop();
+			std::cout << std::endl;
 		}
 		std::cout << std::endl;
 
 		if (currentWord.size() >= 0)
 		{
+			std::vector<std::pair<std::string, std::vector<std::string>>> futureStates;
 			for (int index = 0; index < m_delta.size(); index++)
 			{
 				std::cout << std::get<0>(m_delta[index]) << " = " << currentState << " " << std::get<1>(m_delta[index]) << " = " << letter << " " << std::get<2>(m_delta[index]) << " = " << std::get<2>(currentFront).top() << std::endl;
@@ -113,9 +115,10 @@ bool PushDownAutomaton::CheckWord(std::string word)
 				futureStack.pop();
 				if (!pairInfo.second.empty())
 				{
-					if (pairInfo.second.size() > 1)
-						futureStack.push(pairInfo.second[1]);
-					futureStack.push(pairInfo.second[0]);
+					for (int index = pairInfo.second.size() - 1; index >= 0; index--)
+					{
+						futureStack.push(pairInfo.second[index]);
+					}
 				}
 
 				std::cout << "FUTURE STACK: ";
@@ -128,14 +131,25 @@ bool PushDownAutomaton::CheckWord(std::string word)
 				std::cout << std::endl;
 				std::cout << std::endl;
 
-				if (currentWord.size() == 0)
+				bool finalState = false;
+
+				if (m_F.empty())
+					finalState = true;
+				else
 				{
 					auto iterator = std::find(m_F.begin(), m_F.end(), pairInfo.first);
-
-					if (iterator != m_F.end() && futureStack.top() == m_Z0)
-						return true;
+					if (iterator != m_F.end())
+						finalState = true;
 				}
-				else statesQueue.push(std::make_tuple(pairInfo.first, currentWord.substr(1), futureStack));
+
+				//Patching
+				auto futureStackCopy = futureStack;
+				futureStackCopy.pop();
+				if (finalState == true && (futureStack.top() == "STOP" || (futureStack.top() == m_Z0 && futureStackCopy.top() == "STOP" && futureStack.size() == 2)))
+					return true;
+
+				
+				statesQueue.push(std::make_tuple(pairInfo.first, currentWord.substr(1), futureStack));
 			}
 		}
 		statesQueue.pop();
