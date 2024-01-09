@@ -351,7 +351,7 @@ bool Grammar::IsRightHandSideValid(const std::string& rhs)
             return false;  // Invalid symbol found
         }
     }
-    // Additional checks can be implemented as needed
+    
     return true;
 }
 
@@ -678,9 +678,9 @@ void Grammar::RemoveNullProductions()
 
 void Grammar::ConvertToGNFwithPrint()
 {
-    std::cout << "\nRemove start from rhs\n";
+   /* std::cout << "\nRemove start from rhs\n";
     RemoveStartSymbolFromRHS();
-    PrintGrammar();
+    PrintGrammar();*/
 
     std::cout << "\nRemove null\n";
     RemoveNullProductions();
@@ -698,11 +698,11 @@ void Grammar::ConvertToGNFwithPrint()
     ConvertToCNF();
     PrintGrammar();
 
-    std::cout << "\nRemove immediate left recursion\n";
+   /* std::cout << "\nRemove immediate left recursion\n";
     EliminateImmediateLeftRecursion();
-    PrintGrammar();
+    PrintGrammar();*/
 
-    std::cout << "\nGNF\n";
+   std::cout << "\nGNF\n";
     ConvertRulesToGNF();
     PrintGrammar();
 
@@ -758,6 +758,7 @@ void Grammar::RemoveStartSymbolFromRHS()
 
         // Add a new production for the new start symbol
         m_PRules.insert({ newStartSymbol, m_startSymbol });
+        m_VN += newStartSymbol;
 
         // Update the start symbol
         m_startSymbol = newStartSymbol;
@@ -825,14 +826,70 @@ bool Grammar::IsTerminal(const std::string& symbol)
     return symbol.length() == 1 && m_VT.find(symbol[0]) != std::string::npos;
 }
 
-// Helper function to apply Lemma 1
-void Grammar::ApplyLemma1(std::string lhs, std::string rhs, std::multimap<std::string, std::string>& newPRules) {
-    char nonTerminal = rhs[0];
-    std::string rest = rhs.substr(1);
 
-    auto replacements = m_PRules.equal_range(std::string(1, nonTerminal));
-    for (auto it = replacements.first; it != replacements.second; ++it) {
-        newPRules.insert({ lhs, it->second + rest });
+// Helper function to apply Lemma 1
+void Grammar::ApplyLemma1(std::string lhs, std::string rhs, std::multimap<std::string, std::string>& newPRules, bool &changed)
+{
+    int i = 0;
+    while (i < rhs.length() )
+    {
+        if (m_VN.find(rhs[i]) == std::string::npos)
+            i++;
+        else break;
+    }
+    if (i < rhs.length())
+    {
+        std::string firstNonTerminal = rhs.substr(i, 1);
+        
+            if ((firstNonTerminal == "S" || firstNonTerminal == m_startSymbol || firstNonTerminal < lhs) && (lhs != "S" && lhs != m_startSymbol))
+            {
+                
+                std::string alpha2 = rhs.substr(i + 1);
+
+                auto replacements = m_PRules.equal_range(firstNonTerminal);
+                for (auto it = replacements.first; it != replacements.second; it++)
+                {
+                    std::string newRule = it->second + alpha2;
+                    bool isDuplicate = false;
+
+                    auto range = newPRules.equal_range(lhs);
+                    for (auto existingRuleIt = range.first; existingRuleIt != range.second; ++existingRuleIt)
+                    {
+                        if (existingRuleIt->second == newRule)
+                        {
+                            isDuplicate = true;
+                            break;
+                        }
+                    }
+
+                    if (!isDuplicate)
+                    {
+                        changed = true;
+                        newPRules.insert({ lhs, newRule });
+                    }
+                }
+            }
+        
+            else
+            {
+                bool isDuplicate = false;
+
+                auto range = newPRules.equal_range(lhs);
+                for (auto existingRuleIt = range.first; existingRuleIt != range.second; ++existingRuleIt)
+                {
+                    if (existingRuleIt->second == rhs)
+                    {
+                        isDuplicate = true;
+                        break;
+                    }
+                }
+
+                if (!isDuplicate)
+                {
+                    newPRules.insert({ lhs, rhs });
+                }
+
+            }
     }
 }
 
@@ -840,43 +897,67 @@ void Grammar::ApplyLemma1(std::string lhs, std::string rhs, std::multimap<std::s
 void Grammar::ApplyLemma2(std::string lhs, std::string rhs, std::multimap<std::string, std::string>& newPRules) 
 {
     std::string alpha = rhs.substr(1); // Remove the leading non-terminal (recursive part)
-    std::string newNonTerminal = "Z" + std::to_string(m_zCounter++); // Create a new non-terminal
+    std::string newNonTerminal = "Z";
 
     // Add the new rules replacing the left recursion
     newPRules.insert({ lhs, rhs[0] + newNonTerminal });
     newPRules.insert({ newNonTerminal, alpha });
     newPRules.insert({ newNonTerminal, alpha + newNonTerminal });
+    //m_VN.push_back(newNonTerminal);
 }
 
 void Grammar::ConvertRulesToGNF() 
 {
-    std::multimap<std::string, std::string> newPRules;
+    
 
-    for (auto& rule : m_PRules) {
+    bool changed = true;
+    while (changed)
+    {
+        std::multimap<std::string, std::string> newPRules;
+        changed = false;
+        for (auto& rule : m_PRules)
+        {
+            std::string lhs = rule.first;
+            std::string rhs = rule.second;
+
+            if (IsTerminal(rhs))
+            {
+                newPRules.insert({ lhs, rhs }); // Rule is already in GNF (A -> a)
+            }
+            else if (rhs.length() >= 2)
+            {
+                if (IsTerminal(std::string(1, rhs[0])))
+                {
+                    newPRules.insert({ lhs, rhs }); // Already in GNF
+                }
+                else
+                {
+                    if (rhs[0] != lhs[0])
+                    {
+                        // Lemma 1: Replace the non-terminal
+                        ApplyLemma1(lhs, rhs, newPRules, changed);
+                    }
+                }
+            }
+
+        }
+        
+        m_PRules = newPRules;
+
+    }
+    //step 2
+    std::multimap<std::string, std::string> newPRules;
+    for (auto& rule : m_PRules) 
+    {
         std::string lhs = rule.first;
         std::string rhs = rule.second;
 
-        if (IsTerminal(rhs)) {
-            newPRules.insert({ lhs, rhs }); // Rule is already in GNF (A -> a)
-        }
-        else if (rhs.length() >= 2) {
-            if (IsTerminal(std::string(1, rhs[0]))) {
-                newPRules.insert({ lhs, rhs }); // Already in GNF
-            }
-            else {
-                if (rhs[0] == lhs[0]) {
-                    // Lemma 2: Eliminate left recursion
-                    ApplyLemma2(lhs, rhs, newPRules);
-                }
-                else {
-                    // Lemma 1: Replace the non-terminal
-                    ApplyLemma1(lhs, rhs, newPRules);
-                }
-            }
+        if (rhs[0] == lhs[0])
+        {
+            ApplyLemma2(lhs, rhs, newPRules); // Apply Lemma 2
         }
     }
-
-    m_PRules = newPRules; // Update the production rules
+    
 }
 
 
@@ -884,110 +965,105 @@ void Grammar::ConvertRulesToGNF()
 
 void Grammar::ConvertToCNF() 
 {
+    std::multimap < std::string, std::string> newProductions;
     // Introduce Non-terminals for Terminals in RHS
     for (auto& rule : m_PRules) 
     {
         std::string lhs = rule.first;
         std::string rhs = rule.second;
-
+       
         if (rhs.length() == 1 && m_VT.find(rhs[0]) != std::string::npos) 
         {
-            continue; // Skip as it's already in CNF (A -> a)
+            newProductions.insert({ rule.first, rhs });
         }
-        else if (rhs.length() >= 2) 
+        else if (rhs.length() > 1)
         {
-            ReplaceTerminals(rhs);
+            ReplaceTerminals(rhs, newProductions);
+            newProductions.insert({ lhs,rhs });
         }
     }
 
-    // Break Down Longer Productions
-    std::multimap<std::string, std::string> newProductions;
+    m_PRules = newProductions;
+    
+    std::multimap<std::string, std::string> newProductions1;
     for (auto& rule : m_PRules)
     {
-        BreakDownLongerProductions(rule.first, rule.second, newProductions);
+        BreakDownLongerProductions(rule.first, rule.second, newProductions1);
     }
 
-    m_PRules = newProductions; // Replace old productions with the new CNF productions
+    m_PRules = newProductions1;
+    
 }
 
-void Grammar::ReplaceTerminals(std::string& rhs)
+void Grammar::ReplaceTerminals(std::string& rhs, std::multimap<std::string, std::string>& newProductions)
 {
-    std::map<char, std::string> terminalToNonTerminal; // Map to track which terminals have been replaced
-    std::string newRHS;
-
     for (char& symbol : rhs)
     {
-        if (IsNonTerminal(symbol)) // Keep non-terminals as is
+        if (!IsNonTerminal(symbol))
         {
-            newRHS += symbol;
-        }
-        else
-        {
-            // If terminal already replaced, use existing non-terminal
-            if (terminalToNonTerminal.find(symbol) != terminalToNonTerminal.end())
-            {
-                newRHS += terminalToNonTerminal[symbol];
-            }
-            else // Replace terminal with new non-terminal
-            {
-                std::string newNonTerminal = GenerateUniqueNonTerminal();
-                m_VN += newNonTerminal; // Add new non-terminal
-                m_PRules.insert({ newNonTerminal, std::string(1, symbol) });
-                terminalToNonTerminal[symbol] = newNonTerminal; // Map terminal to its new non-terminal
-                newRHS += newNonTerminal; // Update RHS
-            }
+            std::string newNonTerminal = GenerateUniqueNonTerminalString();
+            m_VN += newNonTerminal;
+            newProductions.insert({ newNonTerminal, std::string(1,symbol) });
+            std::replace(rhs.begin(), rhs.end(), symbol, newNonTerminal[0]);
+            
         }
     }
-    rhs = newRHS; // Update the original RHS with the modified one
 }
 
 
 void Grammar::BreakDownLongerProductions(const std::string& lhs, const std::string& rhs, std::multimap<std::string, std::string>& newProductions)
 {
-    std::map<std::string, std::string> seenCombinations; // Track seen RHS combinations to reuse non-terminals
-
-    if (rhs.length() == 2)
+    if (rhs.length() == 2 && IsNonTerminal(rhs[0]) && IsNonTerminal(rhs[1]))
     {
         newProductions.insert({ lhs, rhs });
     }
     else if (rhs.length() > 2)
     {
         std::string currentLHS = lhs;
-        std::string remainingRHS = rhs;
 
-        while (remainingRHS.length() > 2)
+        for (size_t it = 0; it < rhs.length() - 1; it++ )
         {
-            std::string nextTwoChars = remainingRHS.substr(0, 2);
-
-            // Check if this combination was seen before
-            if (seenCombinations.find(nextTwoChars) != seenCombinations.end())
-            {
-                // Use the existing non-terminal
-                newProductions.insert({ currentLHS, remainingRHS.substr(0, 1) + seenCombinations[nextTwoChars] });
-                currentLHS = seenCombinations[nextTwoChars];
-            }
-            else
-            {
-                std::string newNonTerminal = GenerateUniqueNonTerminal();
-                m_VN += newNonTerminal; // Add to non-terminals
-                seenCombinations[nextTwoChars] = newNonTerminal; // Track the combination
-                newProductions.insert({ currentLHS, remainingRHS.substr(0, 1) + newNonTerminal });
-                currentLHS = newNonTerminal;
-            }
-
-            remainingRHS = remainingRHS.substr(1);
+            std::string nextTwoChars = rhs.substr(it, 2);
+            char newNonTerminal = GenerateUniqueNonTerminal();
+            m_VN.push_back(newNonTerminal);
+            newProductions.insert({ currentLHS, nextTwoChars });
+            currentLHS = newNonTerminal;
         }
-
-        newProductions.insert({ currentLHS, remainingRHS }); // Insert the last binary production
+    }
+    else
+    {
+        newProductions.insert({ lhs,rhs });
     }
 }
 
 
 
-std::string Grammar::GenerateUniqueNonTerminal() 
+char Grammar::GenerateUniqueNonTerminal() 
 {
-    static int nonTerminalCount = 0; // Static variable to keep track of the count
-    nonTerminalCount++; // Increment count for each new non-terminal
-    return "N" + std::to_string(nonTerminalCount); // Return a unique non-terminal
+    for (char letter = 'A'; letter <= 'Z'; ++letter)
+    {
+        char potentialNonTerminal = letter;
+        if (m_VN.find(potentialNonTerminal) == std::string::npos &&
+            m_VT.find(letter) == std::string::npos)
+        {
+            return potentialNonTerminal;
+        }
+    }
+    throw std::runtime_error("Ran out of unique capital letters for non-terminals.");
+}
+std::string Grammar::GenerateUniqueNonTerminalString()
+{
+    for (char letter = 'A'; letter <= 'Z'; ++letter) // Iterate over the alphabet
+    {
+        std::string potentialNonTerminal(1, letter); // Convert char to string
+
+        // Check if the letter is not in m_VN and m_VT
+        if (m_VN.find(potentialNonTerminal) == std::string::npos &&
+            m_VT.find(potentialNonTerminal) == std::string::npos)
+        {
+            return potentialNonTerminal; // Return the unused letter as a string
+        }
+    }
+    throw std::runtime_error("Ran out of unique capital letters for non-terminals."); // Error if all letters are used
 }
 

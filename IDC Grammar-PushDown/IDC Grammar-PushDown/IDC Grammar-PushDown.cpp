@@ -16,6 +16,15 @@ void displayHeader() {
 	std::cout << "==============================\n\n";
 }
 
+/*
+S -> AB
+S -> Aa
+S -> a
+A -> Aa
+A -> a
+B -> SBa
+B -> b*/
+
 int main()
 {
 	std::string filePath = "grammar.txt";

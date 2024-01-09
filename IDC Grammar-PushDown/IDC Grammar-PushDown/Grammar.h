@@ -39,12 +39,14 @@ public:
 	bool IsStartSymbolOnRHS();
 	void RemoveStartSymbolFromRHS();
 	void ConvertToCNF();
-	void ReplaceTerminals(std::string& rhs);
+	void ReplaceTerminals(std::string& rhs, std::multimap<std::string, std::string>& newProductions);
 	void BreakDownLongerProductions(const std::string& lhs, const std::string& rhs, std::multimap<std::string, std::string>& newProductions);
-	std::string GenerateUniqueNonTerminal();
+	char GenerateUniqueNonTerminal();
+	std::string GenerateUniqueNonTerminalString();
 	void EliminateImmediateLeftRecursion();
 	bool IsTerminal(const std::string& symbol);
-	void ApplyLemma1(std::string lhs, std::string rhs, std::multimap<std::string, std::string>& newPRules);
+	//void RenameNonterminals();
+	void ApplyLemma1(std::string lhs, std::string rhs, std::multimap<std::string, std::string>& newPRules, bool &changed);
 	void ApplyLemma2(std::string lhs, std::string rhs, std::multimap<std::string, std::string>& newPRules);
 	void ConvertRulesToGNF();
 	
