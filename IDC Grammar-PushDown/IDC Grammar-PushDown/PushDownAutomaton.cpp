@@ -190,8 +190,11 @@ PushDownAutomaton PushDownAutomaton::IDCtoPDAconversion(Grammar grammar)
 		for (auto it = rule.second.begin() + 1; it != rule.second.end(); ++it)
 		{
 			contor++;
-			char stackSymbol = *it;
-			std::string stackOperation(1, stackSymbol);
+			std::string stackOperation(1, *it);
+			while ((it + 1) != rule.second.end()) 
+			{
+				stackOperation += *(++it);
+			}
 			stackOperations.push_back(std::make_pair(fromState, std::vector<std::string>{stackOperation}));
 		}
 
