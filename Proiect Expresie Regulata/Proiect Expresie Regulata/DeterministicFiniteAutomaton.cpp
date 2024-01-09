@@ -259,6 +259,12 @@ NondeterministicFiniteAutomatonWithLambdaTransitions DeterministicFiniteAutomato
 	return m_automaton;
 }
 
+bool compare_transitions(std::vector<std::string> transition1, std::vector<std::string> transition2) {
+	std::sort(transition1.begin(), transition1.end());
+	std::sort(transition2.begin(), transition2.end());
+	return transition1 == transition2;
+}
+
 void DeterministicFiniteAutomaton::lambdaClosure(std::vector<std::string> &oldStates, int &stateContor, std::tuple<std::string, char, std::vector<std::string>> newTransition, std::vector<std::string> &Q)
 {
 	std::queue<std::string> states;
@@ -292,7 +298,7 @@ void DeterministicFiniteAutomaton::lambdaClosure(std::vector<std::string> &oldSt
 
 	for (const auto& closures : m_lambdaClosures)
 	{
-		if (lambdaClosure == std::get<1>(closures))
+		if (compare_transitions(lambdaClosure,std::get<1>(closures)))
 		{
 			std::get<2>(newTransition) = { std::get<2>(closures) };
 			newTransitions.push_back(newTransition);
