@@ -182,14 +182,15 @@ PushDownAutomaton PushDownAutomaton::IDCtoPDAconversion(Grammar grammar)
 	for (const auto& rule : PRules)
 	{
 		std::string fromState = "q0";
-		char inputSymbol = rule.first[0];
-		std::string toState = "q0";
+		char inputSymbol = rule.second[0];
+		std::string toState = rule.first;
 		std::vector<std::pair<std::string, std::vector<std::string>>> stackOperations;
 
-		for (char stackSymbol : rule.second)
+		for (auto it = rule.second.begin() + 1; it != rule.second.end(); ++it)
 		{
+			char stackSymbol = *it;
 			std::string stackOperation(1, stackSymbol);
-			stackOperations.push_back(std::make_pair(toState, std::vector<std::string>{stackOperation}));
+			stackOperations.push_back(std::make_pair(fromState, std::vector<std::string>{stackOperation}));
 		}
 
 		delta.push_back(std::make_tuple(fromState, inputSymbol, toState, stackOperations));
